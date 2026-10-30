@@ -45,14 +45,9 @@ export const api = {
       const hospital = mock.HOSPITALS.find((h) => h.id === hospital_id) || mock.HOSPITALS[0];
       return { access_token: null, user: { id: 'local', email, full_name, role, hospital } };
     }
-    try {
-      const r = await request('/api/auth/login/json', { method: 'POST', body: { email, password } });
-      api.setToken(r.access_token); return r;
-    } catch (e) {
-      if (e.status !== 401) throw e;
-      const r = await request('/api/auth/register', { method: 'POST', body: { email, password, full_name, role, hospital_id } });
-      api.setToken(r.access_token); return r;
-    }
+    // accounts are issued by the hospital; a wrong password must not fall through to sign-up
+    const r = await request('/api/auth/login/json', { method: 'POST', body: { email, password } });
+    api.setToken(r.access_token); return r;
   },
   async me() { return request('/api/auth/me'); },
   logout() { api.setToken(null); },
@@ -149,4 +144,12 @@ export const api = {
   async maternalScreen(body) { return (await probe()) ? request('/api/maternal/screen', { method: 'POST', body }) : mock.maternalScore(body); },
   async baby() { return (await probe()) ? request('/api/maternal/baby') : mock.BABY_LOG; },
   async babySummary() { return (await probe()) ? request('/api/maternal/baby/summary') : mock.BABY_SUMMARY; },
+  // postpartum self-check; offline it lives only in this tab's memory
+  async checkins() { return (await probe()) ? request('/api/maternal/checkins') : [...offlineCheckins]; },
+  async addCheckin(body) {
+    if (await probe()) return request('/api/maternal/checkins', { method: 'POST', body });
+    const c = { id: `local-${Date.now()}`, ...body, created_at: new Date().toISOString(), urgent: body.flags.length > 0 };
+    offlineCheckins.unshift(c); return c;
+  },
 };
+const offlineCheckins = [];

@@ -8,12 +8,12 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from models.clinical import BabyEntry, MaternalRecord
+from models.clinical import BabyEntry, MaternalRecord, MotherCheckin
 from models.patient import Patient
 from models.user import User, UserRole
 from services import audit
 from services.maternal_risk import score
-from services.security import get_current_user, require_roles
+from services.security import get_accessible_patient, get_current_user, require_roles
 
 router = APIRouter(prefix="/api/maternal", tags=["maternal"])
 
@@ -109,6 +109,41 @@ async def screen(body: MaternalIn, user: User = Depends(get_current_user)):
     return score(body.model_dump())
 
 
+# ----------------------------------------------------------------------------- postpartum self-check
+# WHO postnatal danger signs for the mother (recommendations on maternal and newborn care for a positive
+# postnatal experience, 2022). Any one of them means: call an ambulance now, do not wait for a reply.
+DANGER_SIGNS = {"bleeding", "fever", "headache_vision", "seizure", "breathing_chest", "abdominal_pain", "discharge", "leg_swelling", "self_harm"}
+
+
+class CheckinIn(BaseModel):
+    mood: int = Field(ge=1, le=5)
+    flags: list[str] = Field(default_factory=list, max_length=len(DANGER_SIGNS))
+    note: str = Field(default="", max_length=1000)
+
+
+def _checkin_out(c: MotherCheckin) -> dict:
+    return {"id": str(c.id), "mood": c.mood, "flags": c.flags, "note": c.note, "created_at": c.created_at, "urgent": bool(c.flags)}
+
+
+@router.get("/checkins")
+async def my_checkins(db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(UserRole.mother))):
+    rows = (await db.execute(select(MotherCheckin).where(MotherCheckin.user_id == user.id).order_by(MotherCheckin.created_at.desc()).limit(14))).scalars().all()
+    return [_checkin_out(c) for c in rows]
+
+
+@router.post("/checkins", status_code=status.HTTP_201_CREATED)
+async def add_checkin(body: CheckinIn, request: Request, db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(UserRole.mother))):
+    unknown = set(body.flags) - DANGER_SIGNS
+    if unknown:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"Unknown signs: {', '.join(sorted(unknown))}")
+    c = MotherCheckin(user_id=user.id, mood=body.mood, flags=sorted(set(body.flags)), note=body.note)
+    db.add(c)
+    await audit.record(db, user, "maternal.checkin", f"user:{user.id}", request=request)  # her answers stay out of the audit trail
+    await db.commit()
+    await db.refresh(c)
+    return _checkin_out(c)
+
+
 @router.get("/baby", response_model=list[BabyEntryOut])
 async def my_baby(request: Request, db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(UserRole.mother))):
     rec = await _own_record(db, user)
@@ -137,8 +172,7 @@ async def baby_summary(db: AsyncSession = Depends(get_db), user: User = Depends(
 @router.post("/baby", response_model=BabyEntryOut, status_code=status.HTTP_201_CREATED)
 async def add_baby_entry(body: BabyEntryIn, request: Request, db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(UserRole.neonatologist))):
     """Staff write the family-visible log."""
-    if not await db.get(Patient, body.patient_id):
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Patient not found")
+    await get_accessible_patient(db, user, body.patient_id)
     e = BabyEntry(**body.model_dump())
     db.add(e)
     await audit.record(db, user, "baby.write", f"patient:{body.patient_id}", request=request)
