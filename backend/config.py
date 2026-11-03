@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://localhost"]
 
     model_dir: str = "./artifacts"
+    regional_bundle_path: str = ""  # empty = backend/data/regional_bundle.json
     seed_demo_data: bool = True
     telemetry_hz: float = 4.0  # WebSocket frame rate for CV telemetry
     retrain_feedback_threshold: int = 25  # clinician sign-offs that trigger an automatic retrain

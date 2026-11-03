@@ -7,6 +7,7 @@ import { api } from '../../services/api.js';
 import { METRICS, YEARS, formatMetric, metricValue, isCapacityMetric } from '../../lib/official.js';
 import { OriginPill } from '../DataOrigin.jsx';
 import KazakhstanChoropleth from './KazakhstanChoropleth.jsx';
+import RegionalForecast from './RegionalForecast.jsx';
 
 const avg = (xs) => { const v = xs.filter((x) => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
 const sum = (xs) => xs.filter((x) => x != null).reduce((a, b) => a + b, 0);
@@ -128,6 +129,8 @@ export default function RegionalDashboard({ initialTab = 'map' }) {
         <TrendChart trends={trends.trends} ids={trendIds} name={name} byId={byId} range={range} metricKey={trendMetric} national={nat[trendMetric]} compare={compare} />
         <div className="muted text-xs mt-2">{t('reg.trendHint')}</div>
       </Card>
+
+      <RegionalForecast selected={selected.id} onSelect={setSel} visibleIds={filter} />
 
       <Card title={t('reg.howTitle')} sub={t('reg.howSub')}>
         <div className="grid gap-3 md:grid-cols-3 text-sm">

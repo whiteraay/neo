@@ -81,6 +81,7 @@ export const api = {
 
   async regions() { if (await probe()) return request('/api/analytics/regions'); return { ...mock.REGIONS, regions: mock.REGIONS.regions.map((r) => ({ ...r, official: offlineOverlay(r.id) })), datasets: im.DATASETS_CATALOGUE.datasets, ashyq_national: im.DATASETS_CATALOGUE.ashyq_national }; },
   async regionTrends() { if (await probe()) return request('/api/analytics/regions/trends'); const { ASHYQ } = await import('../lib/official.js'); return { source_id: 'ashyq', years: [2020, 2021, 2022, 2023, 2024, 2025], national: ASHYQ.national, trends: ASHYQ.trends, regions: ASHYQ.regions }; },
+  async regionForecast() { if (await probe()) return request('/api/analytics/regions/forecast'); return (await import('../lib/regional_bundle.json')).default; },
   async datasets() { return (await probe()) ? request('/api/analytics/datasets') : im.DATASETS_CATALOGUE; },
   async milestones() { return (await probe()) ? request('/api/analytics/milestones') : mock.MILESTONES; },
 

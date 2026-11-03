@@ -1,0 +1,46 @@
+{
+  "statgov": {
+    "description": "Bureau of National Statistics of Kazakhstan (ASPIR) open data, https://stat.gov.kz/en/open-data/",
+    "license": "Publicly available under the ASPIR open-data licence, see https://stat.gov.kz/en/description/",
+    "files": {
+      "population":            {"url": "https://stat.gov.kz/api/iblock/element/38497/file/en/",  "page": "https://stat.gov.kz/en/open-data/demography/476538/"},
+      "population_detailed":   {"url": "https://stat.gov.kz/api/iblock/element/38498/file/en/",  "page": "https://stat.gov.kz/en/open-data/demography/481157/"},
+      "births":                {"url": "https://stat.gov.kz/api/iblock/element/476539/file/en/", "page": "https://stat.gov.kz/en/open-data/demography/476539/"},
+      "deaths":                {"url": "https://stat.gov.kz/api/iblock/element/476540/file/en/", "page": "https://stat.gov.kz/en/open-data/demography/476540/"},
+      "infant_mortality":      {"url": "https://stat.gov.kz/api/iblock/element/476553/file/en/", "page": "https://stat.gov.kz/en/open-data/stat-medicine/476553/"},
+      "fertility":             {"url": "https://stat.gov.kz/api/iblock/element/476554/file/en/", "page": "https://stat.gov.kz/en/open-data/stat-medicine/476554/"},
+      "maternal_mortality":    {"url": "https://stat.gov.kz/api/iblock/element/476552/file/en/", "page": "https://stat.gov.kz/en/open-data/stat-medicine/476552/"},
+      "adolescent_birth_rate": {"url": "https://stat.gov.kz/api/iblock/element/476556/file/en/", "page": "https://stat.gov.kz/en/open-data/stat-medicine/476556/"},
+      "hospital_beds":         {"url": "https://stat.gov.kz/api/iblock/element/40840/file/en/",  "page": "https://stat.gov.kz/en/open-data/stat-medicine/476547/"},
+      "doctors":               {"url": "https://stat.gov.kz/api/iblock/element/40843/file/en/",  "page": "https://stat.gov.kz/en/open-data/stat-medicine/476548/"}
+    }
+  },
+  "worldpop": {
+    "description": "WorldPop Kazakhstan 1km Pregnancies v1 (circa-2015 estimates; HDX labels the resource 2018, the production year). DOI 10.5258/SOTON/WP00612",
+    "license": "CC BY 4.0, cite WorldPop (2018)",
+    "files": {
+      "pregnancies_1km": {"url": "https://data.worldpop.org/GIS/Pregnancies/Individual_countries/KAZ/Kazakhstan_1km_Pregnancies.7z", "page": "https://data.humdata.org/dataset/worldpop-pregnancies-for-kazakhstan"}
+    }
+  },
+  "geoboundaries": {
+    "description": "geoBoundaries gbOpen KAZ ADM1 (2017 boundaries, 16 units), used to aggregate WorldPop rasters to oblasts",
+    "license": "ODbL 1.0 (OpenStreetMap contributors)",
+    "files": {
+      "kaz_adm1": {"url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/KAZ/ADM1/geoBoundaries-KAZ-ADM1.geojson", "page": "https://www.geoboundaries.org/"}
+    }
+  },
+  "manual": {
+    "worldbank_mics2015": {
+      "description": "Kazakhstan MICS 2015 (KAZ_2015_MICS_v01_M): household, women, under-5 and birth-history microdata",
+      "page": "https://microdata.worldbank.org/index.php/catalog/3005/get-microdata",
+      "why_manual": "Requires a free World Bank / UNICEF MICS account and accepting the confidentiality terms.",
+      "drop_into": "raw/manual/worldbank_mics2015/"
+    },
+    "ihme_gbd": {
+      "description": "IHME Global Burden of Disease results for Kazakhstan, neonatal disorders and child mortality",
+      "page": "https://vizhub.healthdata.org/gbd-results/",
+      "why_manual": "Requires a free IHME account; exports are generated interactively.",
+      "drop_into": "raw/manual/ihme_gbd/"
+    }
+  }
+}

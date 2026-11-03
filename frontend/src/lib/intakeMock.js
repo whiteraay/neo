@@ -121,6 +121,7 @@ export const DATASETS_CATALOGUE = {
     { id: 'gbd', name: 'IHME GBD 2023 · neonatal preterm birth (Global)', kind: 'official', year: 2023, detail: 'Deaths, DALYs — global benchmark 2015–2023', url: 'https://vizhub.healthdata.org/gbd-results/', license: 'IHME non-commercial user agreement' },
     { id: 'odin', name: 'Open Data Watch · ODIN 2015 Kazakhstan', kind: 'official', year: 2015, detail: 'Openness/coverage scores per statistical category', url: 'https://odin.opendatawatch.com', license: 'CC BY 4.0' },
     { id: 'bns2023', name: 'БНС АСПР РК · Естественное движение населения, 2023', kind: 'official', year: 2023, detail: 'Births 387.9 k, deaths 130.6 k; release 09.02.2024', url: 'https://stat.gov.kz', license: 'Open government data' },
+    { id: 'statgov_imr', name: 'БНС АСПР РК · infant mortality by region, 2008– + forecast', kind: 'official', year: 2025, detail: 'stat.gov.kz open-data series; per-region next-year IMR forecast with 80% range', url: 'https://stat.gov.kz/en/open-data/', license: 'ASPIR open-data licence' },
     { id: 'asfendiyarov', name: 'KazNMU n.a. S.D. Asfendiyarov · de-identified NICU extract', kind: 'real', year: 2025, detail: '1 105 admissions 2021–2025, 25 columns; admission model', url: null, license: 'Hackathon use only' },
   ],
   bns_2023: { year: 2023, births: 387900, deaths: 130600, natural_increase: 257400, marriages: 120900, divorces: 16800, highest_birth_rate: { region: 'mangystau', value: 26.78 }, highest_death_rate: { region: 'north', value: 11.08 }, release: '2024-02-09' },
