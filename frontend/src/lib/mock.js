@@ -26,7 +26,7 @@ export const MILESTONES = [
   { id: 'spec', title: 'Specialist Verification', items: [['Clinical advisory board formed', true], ['50 predictions reviewed by neonatologists', false], ['Agreement ≥ 85% on risk tier', false], ['CV telemetry validated vs nurse NFCS', false]] },
   { id: 'pilot', title: 'Pilot Hospital Access', items: [['Ethics committee approval', true], ['Pilot site MoU (Astana NRC)', true], ['Role-based access configured', true], ['Shadow-mode go-live date set', false]] },
   { id: 'his', title: 'HIS API Integration', items: [['Damumed HL7 gateway credentials', true], ['KazHealth FHIR R4 sandbox tested', false], ['CV edge node installed at bedside', false], ['On-premise deployment hardened', false]] },
-  { id: 'open', title: 'Regional Open Data', items: [['stat.gov.kz series ingested', true], ['UNICEF MICS indicators mapped', true], ['Regional benchmarks published', false]] },
+  { id: 'open', title: 'Regional Open Data', items: [['stat.gov.kz series ingested', true], ['UNICEF MICS indicators mapped', true], ['Regional IMR forecast model trained & backtested', true], ['Regional benchmarks published', false]] },
 ];
 
 export const BENCHMARKS = {

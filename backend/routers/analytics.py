@@ -7,7 +7,7 @@ import hashlib
 import re
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,6 +19,7 @@ from models.user import Hospital, User, UserRole
 from services.ml_engine import risk_engine
 from config import get_settings
 from services import official_data
+from services.regional import BundleUnavailable, load_bundle
 from services.security import get_current_user, require_roles
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
@@ -70,7 +71,7 @@ MILESTONES = [
     {"id": "spec", "title": "Specialist Verification", "items": [["Clinical advisory board formed", True], ["50 predictions reviewed by neonatologists", False], ["Agreement ≥ 85% on risk tier", False], ["Human-in-the-loop sign-off audited (Law 230-VIII)", False]]},
     {"id": "pilot", "title": "Pilot Hospital Access", "items": [["Ethics committee approval", True], ["Pilot site MoU (Astana NRC)", True], ["Role-based access configured", True], ["Shadow-mode go-live date set", False]]},
     {"id": "his", "title": "HIS API Integration", "items": [["Damumed HL7 gateway credentials", True], ["KazHealth FHIR R4 sandbox tested", False], ["On-premise deployment hardened", False]]},
-    {"id": "open", "title": "Regional Open Data", "items": [["БНС series ingested", True], ["UNICEF MICS indicators mapped", True], ["Regional benchmarks published", False]]},
+    {"id": "open", "title": "Regional Open Data", "items": [["БНС series ingested", True], ["UNICEF MICS indicators mapped", True], ["Regional IMR forecast model trained & backtested", True], ["Regional benchmarks published", False]]},
 ]
 
 
@@ -87,6 +88,18 @@ async def region_trends():
     """AshyqData 2020–2025 infant & neonatal mortality trends per region (initial NeoOutcome dataset)."""
     a = official_data.ashyq()
     return {"source_id": "ashyq", "years": list(range(2020, 2026)), "national": a["national"], "trends": a["trends"], "regions": a["regions"]}
+
+
+@router.get("/regions/forecast")
+async def region_forecast():
+    """stat.gov.kz infant mortality 2008– per region with next-year forecast, observed-vs-expected and backtest metrics.
+
+    Served from the bundle built offline by `data/scripts/pipeline.py` (see services/regional.py); regions carry the same `id` as /regions.
+    """
+    try:
+        return load_bundle()
+    except BundleUnavailable as e:
+        raise HTTPException(status_code=503, detail=f"Regional forecast unavailable: {e}") from e
 
 
 @router.get("/datasets")

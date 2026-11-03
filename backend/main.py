@@ -10,6 +10,7 @@ from database import SessionLocal, init_db
 from routers import analytics, auth, computer_vision, integration, intake, maternal, ml_ops, patients, predictions, tasks
 from services.ml_engine import risk_engine
 from services.admission_engine import admission_engine
+from services.regional import BundleUnavailable, load_bundle
 
 settings = get_settings()
 
@@ -47,4 +48,8 @@ for r in (auth.router, patients.router, predictions.router, computer_vision.rout
 
 @app.get("/api/health", tags=["system"])
 async def health():
-    return {"status": "ok", "app": settings.app_name, "version": settings.app_version, "model": risk_engine.version, "model_metrics": risk_engine.metrics, "calibrated": risk_engine.calibrator is not None, "admission_model": {"ready": admission_engine.ready, "auroc": admission_engine.metrics.get("auroc"), "threshold": round(admission_engine.threshold, 4)}, "environment": settings.environment}
+    try:
+        regional = load_bundle()["data_year"]
+    except BundleUnavailable:
+        regional = None
+    return {"status": "ok", "app": settings.app_name, "version": settings.app_version, "model": risk_engine.version, "model_metrics": risk_engine.metrics, "calibrated": risk_engine.calibrator is not None, "admission_model": {"ready": admission_engine.ready, "auroc": admission_engine.metrics.get("auroc"), "threshold": round(admission_engine.threshold, 4)}, "environment": settings.environment, "regional_data_year": regional}
