@@ -31,6 +31,8 @@
 
 :root { color-scheme: light; }
 html, body, #root { height: 100%; }
+html { scroll-padding-top: 84px; } /* anchors stop below the sticky landing header */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 body { background: var(--color-bg); color: var(--color-fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; background-image: radial-gradient(520px 520px at 100% -8%, rgba(14,159,155,.10), transparent 68%); background-attachment: fixed; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 h1, h2, h3, .display { font-family: var(--font-display); letter-spacing: -0.01em; text-wrap: balance; font-weight: 600; line-height: 1.2; }
 h3 { font-size: 19px; }
@@ -181,7 +183,7 @@ small, .text-xs { letter-spacing: .005em; }
 .breathe-glow { animation: breathe 3.2s ease-in-out infinite; }
 .accordion-body { overflow: hidden; transition: max-height .5s cubic-bezier(.22,1,.36,1), opacity .4s ease; }
 /* provenance pills */
-.origin { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px; font-family: var(--font-body); font-size: 11.5px; font-weight: 500; letter-spacing: .01em; border: 1px solid; white-space: nowrap; }
+.origin { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 9px; font-family: var(--font-body); font-size: 11.5px; font-weight: 500; letter-spacing: .01em; border: 1px solid; max-width: 100%; }
 .origin-official { color: #15803D; background: #DCFCE7; border-color: #A7F3D0; }
 .origin-synthetic { color: #B45309; background: #FEF3C7; border-color: #E6CFA6; }
 .origin-simulated { color: #4A4670; background: #EEEBFF; border-color: #D5D3E3; }
@@ -190,7 +192,10 @@ small, .text-xs { letter-spacing: .005em; }
 
 /* ===== Pointer light: highlight + shadow that leans away from the cursor (set by lib/fx.js) ===== */
 #cursor-glow { position: fixed; left: 0; top: 0; width: 320px; height: 320px; border-radius: 50%; pointer-events: none; z-index: 1; opacity: .9; background: radial-gradient(circle, rgba(14,159,155,.16) 0, rgba(47,128,237,.08) 35%, transparent 68%); transition: opacity .4s ease; mix-blend-mode: multiply; will-change: transform; }
-.card, .card-pop, .tile, .glass, .hud-portal { position: relative; isolation: isolate; }
+/* grid items may shrink below their content, otherwise long text pushes the page past the screen */
+@layer components { .grid > * { min-width: 0; } }
+/* in a layer so that absolute / sticky utilities on these classes still win */
+@layer components { .card, .card-pop, .tile, .glass, .hud-portal { position: relative; isolation: isolate; } }
 .card.lit, .card-pop.lit, .tile.lit, .glass.lit, .hud-portal.lit { box-shadow: var(--sx, 0px) var(--sy, 12px) 34px -10px rgba(14,159,155,.30), 0 1px 2px rgba(11,34,57,.06); border-color: #99E6E3; transform: translateY(-1px); }
 .card.lit::after, .card-pop.lit::after, .tile.lit::after, .glass.lit::after, .hud-portal.lit::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(14,159,155,.10), rgba(47,128,237,.04) 45%, transparent 70%); }
 .btn.lit, .nav-item.lit, .hud-cta.lit { box-shadow: var(--sx, 0px) var(--sy, 8px) 20px -8px rgba(14,159,155,.45); }

@@ -12,6 +12,14 @@ export const Card = ({ title, sub, right, children, className = '', glass }) => 
   </section>
 );
 
+/** Task deadline in the viewer's language; word order differs between languages, hence the {n} templates. */
+export const dueLabel = (iso, t) => {
+  if (!iso) return '';
+  const m = Math.round((new Date(iso) - Date.now()) / 60000); const abs = Math.abs(m);
+  const key = m < 0 ? (abs < 60 ? 'due.lateMin' : 'due.lateH') : (abs < 60 ? 'due.min' : 'due.h');
+  return t(key).replace('{n}', abs < 60 ? abs : (abs / 60).toFixed(1));
+};
+
 export const Badge = ({ tone = 'muted', children }) => <span className={`badge badge-${tone}`}>{children}</span>;
 
 export const Stat = ({ label, value, unit, tone }) => (

@@ -11,10 +11,10 @@ from models.patient import Patient
 from models.clinical import ClinicalTask
 from models.telemetry import ExpertReview, Prediction, VitalSign
 from models.user import User, UserRole
-from routers.patients import latest_vitals
+from routers.patients import latest_vitals, vitals_since
 from schemas.prediction import PredictionListItem, PredictRequest, PredictResponse, ReviewCreate, ReviewOut, ShapItem
 from services import audit
-from services.ml_engine import RECOMMENDATIONS, risk_engine, tier_for
+from services.ml_engine import ALERT_PERCENT, NUMERIC_FEATURES, RECOMMENDATIONS, risk_engine, tier_for
 from services.security import CLINICAL, can_access_patient, get_accessible_patient, get_current_user, patient_scope, require_roles
 from services.shap_service import waterfall
 
@@ -37,6 +37,12 @@ def build_features(p: Patient, v, overrides: dict) -> dict:
 @router.post("", response_model=PredictResponse)
 async def predict(body: PredictRequest, request: Request, db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(*CLINICAL))):
     p = await get_accessible_patient(db, user, body.patient_id)
+    for key in NUMERIC_FEATURES:
+        if key in body.overrides:
+            try:
+                float(body.overrides[key])
+            except ValueError:
+                raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"{key} must be a number") from None
     feats = build_features(p, await latest_vitals(db, p.id), body.overrides)
     result = risk_engine.predict(feats)
     shap_rows, base_pct = waterfall(result)
@@ -103,8 +109,7 @@ async def timeline(patient_id: str, hours: int = 24, step_minutes: int = 60, db:
     """«Машина времени»: re-score the patient at each historical vitals sample so the doctor can replay how the
     risk evolved, when the alert would have fired (first crossing of 50 %), and when deterioration was observed."""
     p = await get_accessible_patient(db, user, patient_id)
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
-    rows = (await db.execute(select(VitalSign).where(VitalSign.patient_id == patient_id, VitalSign.time >= since).order_by(VitalSign.time))).scalars().all()
+    rows = await vitals_since(db, patient_id, hours)
     if not rows:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No vitals history for this patient")
     # carry-forward labs (lab rows are sparse), sample at step_minutes
@@ -125,7 +130,7 @@ async def timeline(patient_id: str, hours: int = 24, step_minutes: int = 60, db:
         top = sorted(zip(risk_engine.encoded_features(r), r.shap_values), key=lambda x: -abs(x[1]))[:3]
         points.append({"time": v.time.isoformat(), "risk_percent": pct, "tier": tier_for(pct), "heart_rate": _r(carried.get("heart_rate")), "spo2": _r(carried.get("spo2")), "fio2": _r(carried.get("fio2")), "lactate": _r(carried.get("lactate"), 1),
                        "drivers": [k for k, _ in top]})
-    alert = next((pt for pt in points if pt["risk_percent"] >= 50), None)
+    alert = next((pt for pt in points if pt["risk_percent"] >= ALERT_PERCENT), None)
     event_at = p.event_at.isoformat() if p.event_at else None
     lead_h = round((p.event_at - datetime.fromisoformat(alert["time"])).total_seconds() / 3600, 1) if (alert and p.event_at) else None
     return {"patient_id": p.id, "points": points, "alert_at": alert["time"] if alert else None, "event_at": event_at, "event_label": p.event_label, "lead_time_hours": lead_h, "model_version": risk_engine.version}

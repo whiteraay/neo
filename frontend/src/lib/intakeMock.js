@@ -115,7 +115,7 @@ export const appointmentStore = (() => {
 
 export const DATASETS_CATALOGUE = {
   datasets: [
-    { id: 'ashyq', name: 'AshyqData 2025 · Минздрав РК', kind: 'official', year: 2025, detail: 'Infant & neonatal mortality, hospital beds and nursing staff by region; 2020–2025 trends', url: 'https://data.egov.kz', license: 'Open data of the Republic of Kazakhstan' },
+    { id: 'ashyq', name: 'БНС РК 2025 · Минздрав РК', kind: 'official', year: 2025, detail: 'Infant & neonatal mortality, hospital beds and nursing staff by region; 2020–2025 trends', url: 'https://data.egov.kz', license: 'Open data of the Republic of Kazakhstan' },
     { id: 'mics_micro', name: 'MICS Kazakhstan 2024 · microdata (bh.sav)', kind: 'official', year: 2024, detail: 'Birth-history recode: weighted NMR/IMR for births in the 60 months before interview', url: 'https://mics.unicef.org/surveys', license: 'UNICEF MICS data-use terms' },
     { id: 'worldpop', name: 'WorldPop · pregnancies 2015 (1 km)', kind: 'official', year: 2015, detail: 'KAZ_pregs_pp_v1_2015.tif summed per admin-1 polygon', url: 'https://dx.doi.org/10.5258/SOTON/WP00612', license: 'CC BY 4.0 — WorldPop (2018)' },
     { id: 'gbd', name: 'IHME GBD 2023 · neonatal preterm birth (Global)', kind: 'official', year: 2023, detail: 'Deaths, DALYs — global benchmark 2015–2023', url: 'https://vizhub.healthdata.org/gbd-results/', license: 'IHME non-commercial user agreement' },

@@ -63,7 +63,7 @@ export function IncubatorViewport({ mode: modeProp, thermal, risk = 31 }) {
       ctx.fillStyle = '#F87171'; ctx.fillText('ECG II · 148 bpm', 14 * S, H - 14 * S); ctx.fillStyle = '#BFE9FF'; ctx.fillText({ thermal: 'LWIR · 9 Hz · ±0.3 °C', rgb: 'CAM-07 · 1080p · 30 fps', anatomy: 'ANATOMY · synthetic' }[mode], W - 150 * S, 22 * S);
       // risk gauge overlay (top-right)
       const gx = W - 58 * S, gy = 78 * S, R = 26 * S; ctx.lineWidth = 5 * S; ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.beginPath(); ctx.arc(gx, gy, R, Math.PI * 0.75, Math.PI * 2.25); ctx.stroke();
-      const rc = risk >= 75 ? '#F87171' : risk >= 50 ? '#F59E6B' : risk >= 25 ? '#D9A85C' : '#2F80ED'; ctx.strokeStyle = rc; ctx.shadowColor = rc; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(gx, gy, R, Math.PI * 0.75, Math.PI * 0.75 + Math.PI * 1.5 * (risk / 100)); ctx.stroke(); ctx.shadowBlur = 0;
+      const rc = risk >= 20 ? '#F87171' : risk >= 10 ? '#F59E6B' : risk >= 5 ? '#D9A85C' : '#2F80ED'; ctx.strokeStyle = rc; ctx.shadowColor = rc; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(gx, gy, R, Math.PI * 0.75, Math.PI * 0.75 + Math.PI * 1.5 * (risk / 100)); ctx.stroke(); ctx.shadowBlur = 0;
       ctx.fillStyle = rc; ctx.font = `bold ${15 * S}px Inter, sans-serif`; ctx.textAlign = 'center'; ctx.fillText(`${risk}%`, gx, gy + 5 * S); ctx.font = `${8 * S}px JetBrains Mono`; ctx.fillStyle = '#BFE9FF'; ctx.fillText('24H RISK', gx, gy + 36 * S); ctx.textAlign = 'left';
       const sy = (t * 60) % H; ctx.fillStyle = 'rgba(0,229,255,.06)'; ctx.fillRect(0, sy, W, 3);
       raf = requestAnimationFrame(draw);

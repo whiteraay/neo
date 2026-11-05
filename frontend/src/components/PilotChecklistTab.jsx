@@ -23,7 +23,7 @@ export default function PilotChecklistTab() {
       <Card title="Pilot readiness" sub="MVP → hospital shadow-mode pilot" className="lg:sticky lg:top-20 self-start">
         <Gauge pct={pct} color="#0E9F9B" label={`${pct}%`} sub={`${done} of ${total} milestones`} full />
         <div className="grid gap-2 mt-2">{vectors.map((v) => { const d = (state[v.id] || []).filter(Boolean).length; return <div key={v.id}><div className="flex justify-between text-xs"><span>{v.title}</span><span className="mono muted">{d}/{v.items.length}</span></div><div className="meter mt-1"><span style={{ width: `${(d / v.items.length) * 100}%`, background: d === v.items.length ? '#16A34A' : '#0E9F9B' }} /></div></div>; })}</div>
-        <div className="mt-4 text-xs muted">Target: shadow-mode go-live Q1 2027 at Astana NRC; Almaty and Shymkent follow after recalibration sign-off.</div>
+        <div className="mt-4 text-xs muted">Next: shadow-mode pilot, once ethics approval and a hospital agreement are in place.</div>
       </Card>
       <div className="grid md:grid-cols-2 gap-4">{vectors.map((v, idx) => { const Icon = ICONS[v.id] || Globe; const d = (state[v.id] || []).filter(Boolean).length; const full = d === v.items.length; return (
         <Card key={v.id} title={<span className="flex items-center gap-2"><span className="mono muted text-xs">0{idx + 1}</span><Icon size={16} />{v.title}</span>} right={<Badge tone={full ? 'low' : d > 0 ? 'moderate' : 'high'}>{full ? 'ready' : d > 0 ? 'in progress' : 'blocked'}</Badge>}>

@@ -22,7 +22,7 @@ export default function DatasetsCatalogue() {
     <div className="grid gap-4">
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label={`${t('ds.births')} · 2023`} value={(b.births / 1000).toFixed(1) + ' k'} unit={`БНС АСПР РК · ${t('ds.release')} ${b.release}`} tone="#0E9F9B" />
-        <Stat label={`${t('an.nmr')} · 2025`} value={`${n.neonatal_mortality} ‰`} unit={`AshyqData · ${t('ds.infant')} ${n.infant_mortality} ‰`} tone="#B45309" />
+        <Stat label={`${t('an.nmr')} · 2025`} value={`${n.neonatal_mortality} ‰`} unit={`${t('ds.infant')} ${n.infant_mortality} ‰ · БНС РК`} tone="#B45309" />
         <Stat label={`MICS 2024 · ${t('ds.microdata')}`} value={`${mn.nmr} ‰`} unit={`${mn.neo_deaths} ${t('reg.events')} / ${mn.births.toLocaleString('ru-RU')} ${t('ds.birthsWord')} · ${t('ds.weighted')}`} tone="#15803D" />
         <Stat label={`WorldPop · ${t('reg.pregnancies')} 2015`} value={cat.worldpop_total.toLocaleString('ru-RU')} unit="1 km raster · DOI 10.5258/SOTON/WP00612" />
       </section>

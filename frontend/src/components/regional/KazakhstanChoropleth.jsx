@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import { useT } from '../../lib/i18n.jsx';
-import { METRICS, colorScale, formatMetric, metricValue } from '../../lib/official.js';
+import { METRICS, colorScale, formatMetric, metricValue, centreName } from '../../lib/official.js';
 
 /** OSM relation id (public/data/kazakhstan-admin1.geojson) → platform region id. Ported from the initial repository. */
 const OSM_TO_ID = { 214834: 'atyrau', 215441: 'west', 215683: 'aktobe', 215686: 'mangystau', 215699: 'east', 215718: 'almaty_region', 215722: 'jambyl', 215727: 'kyzylorda', 215739: 'turkestan', 215743: 'akmola', 215760: 'north', 215772: 'pavlodar', 215776: 'karaganda', 1288730: 'kostanay', 2465058: 'almaty_city', 3087155: 'astana', 3389772: 'shymkent', 14243026: 'abai', 14312169: 'jetisu', 14312737: 'ulytau' };
@@ -73,11 +73,11 @@ export default function KazakhstanChoropleth({ regions, metric, selected, onSele
           })}
         </g>
         <g>
-          {regions.map((r) => { const p = projection([r.lon, r.lat]); if (!p) return null; return <g key={r.id} pointerEvents="none"><circle cx={p[0]} cy={p[1]} r={2.2} fill="#0B2239" opacity=".55" /><text x={p[0]} y={p[1] - 6} textAnchor="middle" fontSize="10.5" fontFamily="Inter, system-ui" fontWeight="500" fill="#3C4660">{r.centre}</text></g>; })}
+          {regions.map((r) => { const p = projection([r.lon, r.lat]); if (!p) return null; return <g key={r.id} pointerEvents="none"><circle cx={p[0]} cy={p[1]} r={2.2} fill="#0B2239" opacity=".55" /><text x={p[0]} y={p[1] - 6} textAnchor="middle" fontSize="10.5" fontFamily="Inter, system-ui" fontWeight="500" fill="#3C4660">{centreName(r.centre, lang)}</text></g>; })}
         </g>
       </svg>
       {tip && (
-        <div className="pointer-events-none absolute z-10 card-pop px-3 py-2 text-xs" style={{ left: Math.min(tip.x + 14, (ref.current?.clientWidth || 600) - 200), top: tip.y + 14, minWidth: 170 }}>
+        <div className="pointer-events-none absolute z-10 card-pop px-3 py-2 text-xs" style={{ left: Math.min(tip.x + 14, (ref.current?.clientWidth || 600) - 200), top: Math.min(tip.y + 14, (ref.current?.clientHeight || 400) - 90), minWidth: 170 }}>
           <div className="font-semibold text-sm">{name(tip.r)}</div>
           <div className="mono mt-0.5">{def?.label[lang] || def?.label.ru}: <span className="font-semibold">{formatMetric(metricValue(tip.r, metric), metric, lang)}</span></div>
           <div className="muted">{def?.note}</div>

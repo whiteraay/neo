@@ -27,7 +27,7 @@ export function AdmissionRiskCard({ patientId }) {
   );
   const v = res?.validation || info?.metrics;
   return (
-    <Card title={<span className="flex items-center gap-2"><Baby size={16} />{t('adm.title')}</span>} sub={t('adm.sub')} right={<div className="flex items-center gap-2"><OriginPill kind="real">Асфендиярова · 1 105 · 2021–2025</OriginPill><button type="button" className="btn btn-primary" onClick={run} disabled={busy}>{busy ? <RefreshCw size={14} className="animate-spin" /> : <FlaskConical size={14} />}{t('adm.run')}</button></div>}>
+    <Card title={<span className="flex items-center gap-2"><Baby size={16} />{t('adm.title')}</span>} sub={t('adm.sub')} right={<div className="flex flex-wrap items-center gap-2"><OriginPill kind="real">{t('src.asf')} · 1 105 · 2021–2025</OriginPill><button type="button" className="btn btn-primary" onClick={run} disabled={busy}>{busy ? <RefreshCw size={14} className="animate-spin" /> : <FlaskConical size={14} />}{t('adm.run')}</button></div>}>
       {/* minmax(0,1fr): let the form column shrink instead of pushing the result column out of the card */}
       <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-5">
         <div className="grid gap-3 content-start min-w-0">
@@ -64,7 +64,7 @@ function Appointments({ patientRef, patientLabel, clinician }) {
   const load = () => api.appointments().then(setItems).catch(() => setItems([]));
   useEffect(() => { load(); }, []);
   const add = async (e) => { e.preventDefault(); if (!form.scheduled_at || form.reason.trim().length < 2) return; setBusy(true); try { await api.addAppointment({ ...form, patient_ref: patientRef, patient_label: patientLabel, clinician_name: clinician, scheduled_at: new Date(form.scheduled_at).toISOString() }); setForm((f) => ({ ...f, reason: '' })); await load(); } finally { setBusy(false); } };
-  const fmt = (iso) => new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : 'ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const fmt = (iso) => new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : lang === 'kz' ? 'kk-KZ' : 'ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   const TYPES = ['re-examination', 'consultation', 'transfer', 'family', 'other'];
   return (
     <Card title={<span className="flex items-center gap-2"><CalendarPlus size={16} />{t('appt.title')}</span>} sub={t('appt.sub')}>

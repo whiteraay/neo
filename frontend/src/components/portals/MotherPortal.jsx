@@ -60,7 +60,7 @@ function BabyView() {
   return (
     <div className="grid gap-4">
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="card p-4"><div className="eyebrow">{t('mom.day')}</div><div className="big-num text-4xl mt-1 text-primary">{sum.day_of_life}</div><div className="muted text-xs">bed {sum.bed}</div></div>
+        <div className="card p-4"><div className="eyebrow">{t('mom.day')}</div><div className="big-num text-4xl mt-1 text-primary">{sum.day_of_life}</div><div className="muted text-xs">{t('home.bed')} {sum.bed}</div></div>
         <div className="card p-4"><div className="eyebrow">{t('mom.growth')}</div><div className="big-num text-4xl mt-1">{last.weight_g}<span className="text-base muted"> g</span></div><div className="muted text-xs">{lang === 'ru' ? 'при рождении' : lang === 'kz' ? 'туғанда' : 'at birth'} {sum.birth_weight_g} g</div></div>
         <div className="card p-4"><div className="eyebrow flex items-center gap-1"><Wind size={12} />{t('mom.breathing')}</div><div className="font-semibold text-lg mt-1">{L(RESP[last.respiratory_support])}</div><div className="muted text-xs">{last.respiratory_support}</div></div>
         <div className="card p-4"><div className="eyebrow flex items-center gap-1"><Utensils size={12} />{t('mom.feeding')}</div><div className="font-semibold text-lg mt-1">{L(FEED[last.feeding])}</div></div>

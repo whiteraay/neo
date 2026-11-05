@@ -55,7 +55,7 @@ export default function AuthModal({ onEnter, onClose, preset }) {
         {h && <div className="muted text-xs mt-1">{h.name_kz} · HIS {h.his_vendor} · Level {h.care_level}</div>}
         {error && <div className="mt-3 text-sm font-semibold text-coral">{error}</div>}
         <button type="submit" className="btn btn-primary w-full justify-center mt-5 text-base py-3" disabled={!ready || busy}><Lock size={16} /> {busy ? '…' : t('auth.enter')} <ArrowRight size={16} /></button>
-        <p className="muted text-xs mt-3">Demo accounts are seeded by the backend (password <span className="mono">Pilot2026!</span>). No real patient data is loaded.</p>
+        <p className="muted text-xs mt-3">{t('auth.demo').split('{pw}')[0]}<span className="mono">Pilot2026!</span>{t('auth.demo').split('{pw}')[1]}</p>
       </form>
     </div>
   );

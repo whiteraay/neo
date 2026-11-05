@@ -38,7 +38,9 @@ LABELS = {
     "bilirubin": "Bilirubin", "urine_output": "Urine output (mL/kg/h)", "sex": "Sex", "delivery_mode": "Delivery mode", "vent_mode": "Ventilation mode",
 }
 
-TIERS = [(75, "critical"), (50, "high"), (25, "moderate"), (0, "low")]
+# calibrated risk of an event in 24 h; on PIC these bands saw events in 2 %, 6 %, 12 % and 37 % of cases
+TIERS = [(20, "critical"), (10, "high"), (5, "moderate"), (0, "low")]
+ALERT_PERCENT = 10
 RECOMMENDATIONS = {
     "low": ["Routine monitoring", "Reassess vitals in 4 h"],
     "moderate": ["Repeat blood gas in 2 h", "Notify attending neonatologist"],
@@ -89,7 +91,7 @@ class RiskEngine:
         return pd.DataFrame([row], columns=ALL_FEATURES)
 
     # ---------- baseline cohort ----------
-    BASELINE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ml", "baseline")
+    BASELINE_DIR = os.environ.get("NEO_BASELINE_DIR") or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ml", "baseline")
 
     @classmethod
     def baseline_manifest(cls) -> dict | None:
@@ -109,6 +111,15 @@ class RiskEngine:
             return encode(raw), raw[LABEL].astype(int).to_numpy(), m["origin_label"]
         X, y = cls.synthetic_cohort(n=6000, seed=42)
         return X, y, "synthetic cohort (n=6000)"
+
+    @classmethod
+    def baseline_groups(cls) -> np.ndarray | None:
+        """Patient IDs when the baseline holds several rows per patient, so no patient lands on both sides of a split."""
+        m = cls.baseline_manifest()
+        if not m:
+            return None
+        raw = pd.read_csv(os.path.join(cls.BASELINE_DIR, m["file"]))
+        return raw["subject_id"].to_numpy() if "subject_id" in raw else None
 
     # ---------- synthetic cohort ----------
     @staticmethod
@@ -160,7 +171,7 @@ class RiskEngine:
         else:  # first boot: run the full pipeline (5-fold CV + calibration) so metrics are honest from the start
             X, y, source = self.baseline_cohort()
             from ml.train_tabular import run_training
-            meta = run_training(X, y, self.settings.model_dir, MODEL_VERSION, source, log=lambda m: None)
+            meta = run_training(X, y, self.settings.model_dir, MODEL_VERSION, source, groups=self.baseline_groups(), log=lambda m: None)
             self.model.load_model(path)
             self.base_rate, self.medians, self.metrics, self.data_source = meta["base_rate"], meta["medians"], meta["metrics"], source
             import joblib

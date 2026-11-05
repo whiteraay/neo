@@ -51,7 +51,7 @@ function RegionTable({ regions, selected, onSelect, name, lang }) {
   const th = (m) => <th key={m.key} className="cursor-pointer select-none whitespace-nowrap" onClick={() => setSort((s) => ({ key: m.key, dir: s.key === m.key ? -s.dir : -1 }))}><span className="inline-flex items-center gap-1">{m.label[lang] || m.label.ru}<ArrowUpDown size={11} className={sort.key === m.key ? 'text-primary' : 'opacity-40'} /></span></th>;
   return (
     <div className="overflow-x-auto"><table className="table"><thead><tr><th>#</th><th>{lang === 'en' ? 'Region' : lang === 'kz' ? 'Өңір' : 'Регион'}</th>{cols.map(th)}</tr></thead>
-      <tbody>{rows.map((r, i) => <tr key={r.id} className={`cursor-pointer ${selected === r.id ? 'bg-primary-soft' : 'hover:bg-cream'}`} onClick={() => onSelect(r.id)}><td className="mono text-xs muted">{i + 1}</td><td className="font-medium whitespace-nowrap">{name(r)}{r.growth && <span className="ml-2 origin origin-synthetic" style={{ padding: '0 6px' }}>рост</span>}</td>{cols.map((m) => { const v = metricValue(r, m.key); return <td key={m.key} className="mono text-xs text-right whitespace-nowrap">{v == null ? <span className="muted">—</span> : formatMetric(v, m.key, lang)}</td>; })}</tr>)}</tbody></table></div>
+      <tbody>{rows.map((r, i) => <tr key={r.id} className={`cursor-pointer ${selected === r.id ? 'bg-primary-soft' : 'hover:bg-cream'}`} onClick={() => onSelect(r.id)}><td className="mono text-xs muted">{i + 1}</td><td className="font-medium whitespace-nowrap">{name(r)}{r.growth && <span className="ml-2 origin origin-synthetic" style={{ padding: '0 6px' }}>{lang === 'en' ? 'growth' : lang === 'kz' ? 'өсу' : 'рост'}</span>}</td>{cols.map((m) => { const v = metricValue(r, m.key); return <td key={m.key} className="mono text-xs text-right whitespace-nowrap">{v == null ? <span className="muted">—</span> : formatMetric(v, m.key, lang)}</td>; })}</tr>)}</tbody></table></div>
   );
 }
 
@@ -62,7 +62,7 @@ function TrendChart({ trends, ids, name, byId, range, metricKey, national, compa
   const data = YEARS.filter((y) => y >= range[0] && y <= range[1]).map((y) => { const row = { year: String(y) }; ids.forEach((id) => { row[id] = trends[id]?.find((p) => p.year === y)?.[metricKey] ?? null; }); return row; });
   return (
     <div className="h-72"><ResponsiveContainer width="100%" height="100%"><LineChart data={data} margin={{ left: -10, right: 12, top: 10, bottom: 0 }}><CartesianGrid vertical={false} /><XAxis dataKey="year" /><YAxis domain={[0, 'auto']} /><Tooltip formatter={(v, n) => [v == null ? '—' : `${v} ‰`, name(byId[n]) || n]} /><Legend formatter={(id) => name(byId[id]) || id} />
-      {compare && national != null && <ReferenceLine y={national} stroke="#52708A" strokeDasharray="5 5" label={{ value: `${lang === 'en' ? 'Kazakhstan' : 'РК'} 2025: ${national} ‰`, fill: '#52708A', fontSize: 10, position: 'insideTopRight' }} />}
+      {compare && national != null && <ReferenceLine y={national} stroke="#52708A" strokeDasharray="5 5" label={{ value: `${lang === 'en' ? 'Kazakhstan' : lang === 'kz' ? 'ҚР' : 'РК'} 2025: ${national} ‰`, fill: '#52708A', fontSize: 10, position: 'insideTopRight' }} />}
       {ids.map((id, i) => <Line key={id} dataKey={id} stroke={LINE_COLORS[i % LINE_COLORS.length]} strokeWidth={i === 0 ? 2.5 : 1.8} dot={{ r: 3 }} connectNulls isAnimationActive={false} />)}
     </LineChart></ResponsiveContainer></div>
   );
@@ -97,16 +97,16 @@ export default function RegionalDashboard({ initialTab = 'map' }) {
       </div>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label={<span className="inline-flex items-center gap-1.5"><Baby size={13} />{t('reg.infantAvg')}</span>} value={`${avg(visible.map((r) => metricValue(r, 'infant_mortality')))?.toFixed(2)} ‰`} unit={`${t('reg.national')}: ${nat.infant_mortality.toFixed(2)} ‰ · AshyqData 2025`} tone="#C62828" />
+        <Stat label={<span className="inline-flex items-center gap-1.5"><Baby size={13} />{t('reg.infantAvg')}</span>} value={`${avg(visible.map((r) => metricValue(r, 'infant_mortality')))?.toFixed(2)} ‰`} unit={`${t('reg.national')}: ${nat.infant_mortality.toFixed(2)} ‰ · БНС РК 2025`} tone="#C62828" />
         <Stat label={<span className="inline-flex items-center gap-1.5"><HeartPulse size={13} />{t('reg.neonatalAvg')}</span>} value={`${avg(visible.map((r) => metricValue(r, 'neonatal_mortality')))?.toFixed(2)} ‰`} unit={`${t('reg.national')}: ${nat.neonatal_mortality.toFixed(2)} ‰`} tone="#B45309" />
         <Stat label={<span className="inline-flex items-center gap-1.5"><BedDouble size={13} />{t('reg.beds')}</span>} value={sum(visible.map((r) => metricValue(r, 'hospital_beds'))).toLocaleString('ru-RU')} unit={t('reg.inSelected')} />
         <Stat label={<span className="inline-flex items-center gap-1.5"><UsersRound size={13} />{t('reg.nursing')}</span>} value={sum(visible.map((r) => metricValue(r, 'nursing_staff'))).toLocaleString('ru-RU')} unit={`${t('reg.hotspots')}: ${hotspots}`} tone="#0E9F9B" />
       </section>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
-        <Card title={t('reg.mapTitle')} sub={t('reg.mapSub')} right={<Badge tone="primary">AshyqData {trends.years?.[0] ?? 2020}–2025</Badge>}>
+        <Card title={t('reg.mapTitle')} sub={t('reg.mapSub')} right={<Badge tone="primary">БНС РК {trends.years?.[0] ?? 2020}–2025</Badge>}>
           {tab === 'map' ? <KazakhstanChoropleth regions={visible} metric={metric} selected={sel} onSelect={setSel} raster={raster} /> : <RegionTable regions={visible} selected={sel} onSelect={setSel} name={name} lang={lang} />}
-          <div className="muted text-xs mt-2 flex flex-wrap gap-x-4 gap-y-1"><span>{t('source')}: AshyqData 2025 · MICS 2024 · WorldPop 2015</span><span>{t('reg.boundaries')}: © OpenStreetMap contributors (ODbL)</span></div>
+          <div className="muted text-xs mt-2 flex flex-wrap gap-x-4 gap-y-1"><span>{t('source')}: БНС РК 2025 · MICS 2024 · WorldPop 2015</span><span>{t('reg.boundaries')}: © OpenStreetMap contributors (ODbL)</span></div>
         </Card>
         <div className="grid gap-3 self-start">
           <Card title={name(selected)} sub={`${selected.centre} · ${t('an.level')} ${['', 'I', 'II', 'III'][selected.level]}`} right={selected.growth && <Badge tone="moderate">{t('an.growth')}</Badge>}>
@@ -134,7 +134,7 @@ export default function RegionalDashboard({ initialTab = 'map' }) {
 
       <Card title={t('reg.howTitle')} sub={t('reg.howSub')}>
         <div className="grid gap-3 md:grid-cols-3 text-sm">
-          {[['PICDB · Асфендиярова / ML', t('reg.how1')], ['AshyqData · MICS · WorldPop', t('reg.how2')], [t('reg.how3t'), t('reg.how3')]].map(([h, p]) => <div key={h} className="rounded-lg border border-line bg-cream p-3"><div className="font-semibold mb-1">{h}</div><p className="muted">{p}</p></div>)}
+          {[[`PICDB · ${t('src.asf')} / ML`, t('reg.how1')], ['БНС РК · MICS · WorldPop', t('reg.how2')], [t('reg.how3t'), t('reg.how3')]].map(([h, p]) => <div key={h} className="rounded-lg border border-line bg-cream p-3"><div className="font-semibold mb-1">{h}</div><p className="muted">{p}</p></div>)}
         </div>
         <div className="flex flex-wrap gap-3 mt-3 text-xs">{(data.datasets || []).filter((d) => d.url).map((d) => <a key={d.id} href={d.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary"><Globe size={12} />{d.name}</a>)}</div>
       </Card>

@@ -30,7 +30,7 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.isotonic import IsotonicRegression
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedGroupKFold, StratifiedKFold, train_test_split
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ml.calibration import PlattCalibrator  # noqa: E402
@@ -77,17 +77,18 @@ def make_model(trees=400, depth=4, lr=0.04, seed=42) -> xgb.XGBClassifier:
                              min_child_weight=3, reg_lambda=1.0, eval_metric="logloss", random_state=seed, n_jobs=-1)
 
 
-def run_training(X: pd.DataFrame, y: np.ndarray, out: Path, version: str, source: str, *, calibration="sigmoid", trees=400, depth=4, lr=0.04, seed=42, progress=None, log=print) -> dict:
+def run_training(X: pd.DataFrame, y: np.ndarray, out: Path, version: str, source: str, *, calibration="sigmoid", trees=400, depth=4, lr=0.04, seed=42, groups=None, progress=None, log=print) -> dict:
     """Full pipeline: stratified 5-fold CV → final fit on 80 % → calibration on held-out 20 % → artifacts + meta.
+    `groups` keeps all rows of one patient on the same side of every split.
     `progress(pct, stage)` is called as the pipeline advances (used by services/retraining_engine.py)."""
     def step(pct, stage):
         if progress:
             progress(pct, stage)
     log(f"[train] {source} · {len(y)} rows · prevalence {y.mean():.3f}")
     step(5, "cross-validation")
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=seed)
+    skf = (StratifiedKFold if groups is None else StratifiedGroupKFold)(n_splits=5, shuffle=True, random_state=seed)
     oof = np.zeros(len(y))
-    for i, (tr, va) in enumerate(skf.split(X, y)):
+    for i, (tr, va) in enumerate(skf.split(X, y, groups)):
         m = make_model(trees, depth, lr, seed); m.fit(X.iloc[tr], y[tr]); oof[va] = m.predict_proba(X.iloc[va])[:, 1]
         log(f"  fold {i + 1}: AUROC {roc_auc_score(y[va], oof[va]):.3f}")
         step(5 + (i + 1) * 12, f"fold {i + 1}/5")
@@ -96,7 +97,11 @@ def run_training(X: pd.DataFrame, y: np.ndarray, out: Path, version: str, source
     cv = {"auroc": roc_auc_score(y, oof), "auprc": average_precision_score(y, oof), "brier": brier_score_loss(y, oof), "ece_raw": ece_score(y, oof),
           "sensitivity": tp / max(tp + fn, 1), "specificity": tn / max(tn + fp, 1), "f1": 2 * tp / max(2 * tp + fp + fn, 1)}
     step(70, "final fit")
-    Xtr, Xcal, ytr, ycal = train_test_split(X, y, test_size=0.2, stratify=y, random_state=seed)
+    if groups is None:
+        Xtr, Xcal, ytr, ycal = train_test_split(X, y, test_size=0.2, stratify=y, random_state=seed)
+    else:
+        tr, cal = next(skf.split(X, y, groups))
+        Xtr, Xcal, ytr, ycal = X.iloc[tr], X.iloc[cal], y[tr], y[cal]
     model = make_model(trees, depth, lr, seed); model.fit(Xtr, ytr)
     step(85, "calibration")
     raw_cal = model.predict_proba(Xcal)[:, 1]
@@ -123,13 +128,15 @@ def run_training(X: pd.DataFrame, y: np.ndarray, out: Path, version: str, source
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data"); ap.add_argument("--out", default=str(Path(__file__).resolve().parents[1] / "artifacts"))
+    ap.add_argument("--group-col", help="column with the patient ID, for data with several rows per patient")
     ap.add_argument("--version", default="v3.1"); ap.add_argument("--push", action="store_true", help="upload to the S3 registry")
     ap.add_argument("--n", type=int, default=8000); ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--calibration", choices=["sigmoid", "isotonic"], default="sigmoid")
     ap.add_argument("--trees", type=int, default=400); ap.add_argument("--depth", type=int, default=4); ap.add_argument("--lr", type=float, default=0.04)
     args = ap.parse_args()
     X, y, source = load(args)
-    run_training(X, y, Path(args.out), args.version, source, calibration=args.calibration, trees=args.trees, depth=args.depth, lr=args.lr, seed=args.seed)
+    groups = pd.read_csv(args.data, usecols=[args.group_col])[args.group_col].to_numpy() if args.group_col else None
+    run_training(X, y, Path(args.out), args.version, source, calibration=args.calibration, trees=args.trees, depth=args.depth, lr=args.lr, seed=args.seed, groups=groups)
     if args.push:
         from ml.registry import push
         print("[train] pushed", push("xgb-24h", args.version, args.out))

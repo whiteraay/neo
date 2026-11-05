@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Layers, Database, Plug, ClipboardCheck, BrainCircuit, Link2, X, Check, Flag } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, LineChart, Line, CartesianGrid, Legend, ReferenceLine } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 import { Card, Badge, Stat, Tabs } from '../lib/ui.jsx';
 import { tier, TIER_LABEL } from '../lib/risk.js';
 import { api } from '../services/api.js';
@@ -11,23 +11,20 @@ import { OriginPill } from './DataOrigin.jsx';
 
 /* ---------- Benchmarking ---------- */
 function Benchmarking() {
-  const [data, setData] = useState(null); const [origin, setOrigin] = useState('kz');
+  const [data, setData] = useState(null); const [origin, setOrigin] = useState('tabular');
   useEffect(() => { api.benchmarks().then(setData); }, []);
   if (!data) return <div className="muted text-sm">Loading benchmarks…</div>;
   const b = data[origin];
-  const calib = data.pic.calibration.map((row, i) => ({ bin: `${row.bin}%`, ideal: row.bin, pic: row.observed, kz: data.kz.calibration[i].observed }));
-  const sites = [...data.pic.sites, ...data.kz.sites];
   return (
     <div className="grid gap-4 fade-in">
-      <Card title="Data origin" sub="Reference benchmarks for the pilot protocol — these metrics are target figures from the published PIC-trained ensemble and the planned Kazakhstan validation, not live model output" right={<div className="flex border border-line-strong">{[['pic', 'PIC baseline'], ['kz', 'Kazakhstan NICU']].map(([k, l]) => <button key={k} type="button" className={`btn border-0 ${origin === k ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setOrigin(k)}>{l}</button>)}</div>}>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3"><Stat label="Cohort" value={b.n.toLocaleString()} unit="admissions" /><Stat label="AUROC" value={b.auroc.toFixed(3)} tone={b.auroc >= 0.9 ? '#16A34A' : '#B45309'} /><Stat label="AUPRC" value={b.auprc.toFixed(2)} /><Stat label="Brier" value={b.brier.toFixed(3)} /><Stat label="ECE" value={b.ece.toFixed(3)} tone={b.ece > 0.04 ? '#B45309' : '#16A34A'} /></div>
-        <div className="mt-3 flex flex-wrap gap-1.5"><OriginPill kind="estimate">protocol benchmark · not live</OriginPill><OriginPill kind="model">live metrics → Model Ops</OriginPill></div>
-        <p className="muted text-xs mt-3">{b.name} · {b.period} · prevalence {b.prevalence}%. {origin === 'kz' ? 'Local cohort over-estimates in mid-range bins; isotonic recalibration is queued before go-live.' : 'Baseline metrics from the original PIC-trained ensemble.'}</p>
+      <Card title="Measured results" sub="Both models, on patients they were not trained on" right={<div className="flex border border-line-strong">{[['tabular', '24 h model'], ['admission', 'Admission model']].map(([k, l]) => <button key={k} type="button" className={`btn border-0 ${origin === k ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setOrigin(k)}>{l}</button>)}</div>}>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3"><Stat label="Cohort" value={b.n?.toLocaleString() ?? '—'} unit={b.unit} /><Stat label="AUROC" value={b.auroc?.toFixed(3) ?? '—'} tone="#0E9F9B" /><Stat label="AUPRC" value={b.auprc?.toFixed(2) ?? '—'} /><Stat label="Brier" value={b.brier?.toFixed(3) ?? '—'} /><Stat label="ECE" value={b.ece?.toFixed(3) ?? '—'} /></div>
+        <p className="muted text-xs mt-3">{b.name} · {b.period} · event rate {b.prevalence}%. {b.note}</p>
         <div className="mt-4 pt-4 border-t border-line"><div className="eyebrow mb-2">Add a local retrospective dataset → automatic retraining</div><DatasetUploader compact /></div>
       </Card>
       <div className="grid lg:grid-cols-2 gap-4">
-        <Card title="Discrimination by site" sub="AUROC, held-out folds"><div className="h-60"><ResponsiveContainer width="100%" height="100%"><BarChart data={sites} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}><CartesianGrid vertical={false} /><XAxis dataKey="site" /><YAxis domain={[0.7, 1]} /><Tooltip /><ReferenceLine y={0.85} stroke="#F59E0B" strokeDasharray="4 4" /><Bar dataKey="auroc" name="AUROC">{sites.map((s, i) => <Cell key={s.site} fill={i === 0 ? '#8AA0B2' : '#0E9F9B'} />)}</Bar></BarChart></ResponsiveContainer></div></Card>
-        <Card title="Calibration" sub="Observed vs predicted, 10 bins"><div className="h-60"><ResponsiveContainer width="100%" height="100%"><LineChart data={calib} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}><CartesianGrid /><XAxis dataKey="bin" /><YAxis domain={[0, 100]} /><Tooltip /><Legend /><Line dataKey="ideal" name="Ideal" stroke="#8AA0B2" strokeDasharray="5 5" dot={false} isAnimationActive={false} /><Line dataKey="pic" name="PIC" stroke="#0E9F9B" strokeWidth={2} dot={false} isAnimationActive={false} /><Line dataKey="kz" name="Kazakhstan" stroke="#E5484D" strokeWidth={2} dot={false} isAnimationActive={false} /></LineChart></ResponsiveContainer></div></Card>
+        <Card title="Discrimination" sub="AUROC on patients outside training"><div className="h-60"><ResponsiveContainer width="100%" height="100%"><BarChart data={data.validation} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}><CartesianGrid vertical={false} /><XAxis dataKey="site" /><YAxis domain={[0.5, 1]} /><Tooltip /><Bar dataKey="auroc" name="AUROC" fill="#0E9F9B" /></BarChart></ResponsiveContainer></div></Card>
+        <Card title="Calibration of the 24 h model" sub="Predicted against observed event rate, % by risk tier"><div className="h-60"><ResponsiveContainer width="100%" height="100%"><LineChart data={data.calibration} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}><CartesianGrid /><XAxis dataKey="bin" /><YAxis /><Tooltip /><Legend /><Line dataKey="predicted" name="Predicted" stroke="#8AA0B2" strokeDasharray="5 5" isAnimationActive={false} /><Line dataKey="observed" name="Observed" stroke="#0E9F9B" strokeWidth={2} isAnimationActive={false} /></LineChart></ResponsiveContainer></div></Card>
       </div>
     </div>
   );

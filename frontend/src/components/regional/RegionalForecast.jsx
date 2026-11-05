@@ -45,7 +45,7 @@ export default function RegionalForecast({ selected, onSelect, visibleIds }) {
           </div>
           <div className="h-64"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={series} margin={{ left: -10, right: 12, top: 8, bottom: 0 }}><CartesianGrid vertical={false} /><XAxis dataKey="year" /><YAxis domain={[0, 'auto']} /><Tooltip formatter={(v, n) => [Array.isArray(v) ? `${fmt(v[0])} – ${fmt(v[1])} ‰` : `${fmt(v)} ‰`, n]} /><Legend />
             <Area dataKey="band" name={t('reg.fc.range')} stroke="none" fill="#0E9F9B" fillOpacity={0.15} isAnimationActive={false} />
-            <Line dataKey="national" name={lang === 'en' ? 'Kazakhstan' : 'РК'} stroke="#52708A" strokeDasharray="5 5" dot={false} isAnimationActive={false} />
+            <Line dataKey="national" name={lang === 'en' ? 'Kazakhstan' : lang === 'kz' ? 'ҚР' : 'РК'} stroke="#52708A" strokeDasharray="5 5" dot={false} isAnimationActive={false} />
             <Line dataKey="imr" name={name(r)} stroke="#0E9F9B" strokeWidth={2.5} dot={{ r: 2 }} isAnimationActive={false} />
             <Line dataKey="forecast" name={t('reg.fc.forecast')} stroke="#0E9F9B" strokeDasharray="5 5" isAnimationActive={false} />
           </ComposedChart></ResponsiveContainer></div>

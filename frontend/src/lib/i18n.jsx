@@ -8,7 +8,7 @@ const STR = {
   'nav.analyst': { en: 'Regional analytics', ru: 'Региональная аналитика', kz: 'Өңірлік талдау' },
   'nav.mother': { en: 'Mothers & families', ru: 'Мамы и семьи', kz: 'Аналар мен отбасылар' },
   'signout': { en: 'Sign out', ru: 'Выйти', kz: 'Шығу' },
-  'disclaimer': { en: 'Decision support only. The final decision is made by the doctor (Law of RK No. 230-VIII on AI).', ru: 'Только поддержка решений. Окончательное решение принимает врач (Закон РК № 230-VIII об ИИ).', kz: 'Тек шешім қабылдауды қолдау. Соңғы шешімді дәрігер қабылдайды (ҚР № 230-VIII ЖИ туралы Заңы).' },
+  'disclaimer': { en: 'Decision support only. The final decision is made by the doctor (low-autonomy AI system, Art. 17 of Law of RK No. 230-VIII).', ru: 'Только поддержка решений. Окончательное решение принимает врач (система низкой автономности, ст. 17 Закона РК № 230-VIII об ИИ).', kz: 'Тек шешім қабылдауды қолдау. Соңғы шешімді дәрігер қабылдайды (төмен дербестік жүйесі, ҚР № 230-VIII Заңының 17-бабы).' },
   'offline': { en: 'Offline demo mode', ru: 'Офлайн-демо', kz: 'Офлайн демо' },
   'online': { en: 'Connected to server', ru: 'Подключено к серверу', kz: 'Серверге қосылған' },
   'source': { en: 'Source', ru: 'Источник', kz: 'Дереккөз' },
@@ -167,7 +167,7 @@ const STR = {
   'appt.type.re-examination': { en: 'Re-examination', ru: 'Повторный осмотр', kz: 'Қайта қарау' }, 'appt.type.consultation': { en: 'Consultation', ru: 'Консультация', kz: 'Кеңес' }, 'appt.type.transfer': { en: 'Transfer', ru: 'Перевод', kz: 'Ауыстыру' }, 'appt.type.family': { en: 'Family meeting', ru: 'Беседа с семьёй', kz: 'Отбасымен әңгіме' }, 'appt.type.other': { en: 'Other', ru: 'Другое', kz: 'Басқа' },
   'appt.status.scheduled': { en: 'scheduled', ru: 'запланировано', kz: 'жоспарланды' }, 'appt.status.completed': { en: 'completed', ru: 'выполнено', kz: 'орындалды' }, 'appt.status.cancelled': { en: 'cancelled', ru: 'отменено', kz: 'болдырылмады' },
   'an.regions': { en: 'Regions', ru: 'Регионы', kz: 'Өңірлер' },
-  'an.regions.sub': { en: 'Child-health map of Kazakhstan: AshyqData 2025, MICS 2024, WorldPop', ru: 'Карта детского здоровья Казахстана: AshyqData 2025, MICS 2024, WorldPop', kz: 'Қазақстанның бала денсаулығы картасы: AshyqData 2025, MICS 2024, WorldPop' },
+  'an.regions.sub': { en: 'Child-health map of Kazakhstan: БНС РК 2025, MICS 2024, WorldPop', ru: 'Карта детского здоровья Казахстана: БНС РК 2025, MICS 2024, WorldPop', kz: 'Қазақстанның бала денсаулығы картасы: БНС РК 2025, MICS 2024, WorldPop' },
   'an.choropleth': { en: 'Interactive map of Kazakhstan regions', ru: 'Интерактивная карта регионов Казахстана', kz: 'Қазақстан өңірлерінің интерактивті картасы' },
   'an.datasets': { en: 'Data & sources', ru: 'Данные и источники', kz: 'Деректер мен дереккөздер' },
   'an.datasets.sub': { en: 'Every dataset behind the platform, with licence and provenance', ru: 'Все наборы данных платформы с лицензией и происхождением', kz: 'Платформаның барлық деректер жинағы, лицензиясы мен шығу тегі' },
@@ -181,7 +181,7 @@ const STR = {
   'reg.boundaries': { en: 'Boundaries', ru: 'Границы', kz: 'Шекаралар' }, 'reg.suppressed': { en: 'suppressed', ru: 'скрыто источником', kz: 'дереккөз жасырған' }, 'reg.events': { en: 'events', ru: 'событий', kz: 'оқиға' }, 'reg.pregnancies': { en: 'pregnancies', ru: 'беременности', kz: 'жүктілік' },
   'reg.top': { en: 'Top 5', ru: 'Топ-5', kz: 'Топ-5' },
   'reg.rasterLayer': { en: 'WorldPop layer: pregnancies per km² (2015)', ru: 'Слой WorldPop: беременности на км² (2015)', kz: 'WorldPop қабаты: км²-ге жүктілік (2015)' },
-  'reg.trend': { en: 'Mortality trend', ru: 'Динамика смертности', kz: 'Өлім динамикасы' }, 'reg.trendSub': { en: 'Infant and neonatal mortality, 2020–2025 (AshyqData). Add regions in the filter to compare.', ru: 'Младенческая и неонатальная смертность, 2020–2025 (AshyqData). Добавьте регионы в фильтре для сравнения.', kz: 'Нәресте және неонаталдық өлім, 2020–2025 (AshyqData). Салыстыру үшін сүзгіде өңірлер қосыңыз.' },
+  'reg.trend': { en: 'Mortality trend', ru: 'Динамика смертности', kz: 'Өлім динамикасы' }, 'reg.trendSub': { en: 'Infant and neonatal mortality, 2020–2025 (БНС РК). Add regions in the filter to compare.', ru: 'Младенческая и неонатальная смертность, 2020–2025 (БНС РК). Добавьте регионы в фильтре для сравнения.', kz: 'Нәресте және неонаталдық өлім, 2020–2025 (БНС РК). Салыстыру үшін сүзгіде өңірлер қосыңыз.' },
   'reg.region': { en: 'Region', ru: 'Регион', kz: 'Өңір' }, 'reg.compareRK': { en: 'Compare with KZ', ru: 'Сравнить с РК', kz: 'ҚР-мен салыстыру' },
   'reg.trendHint': { en: 'Dashed line: national 2025 value. Regional series are annual official figures; year-to-year swings in small regions reflect small numbers of events.', ru: 'Пунктир — значение по РК за 2025 г. Региональные ряды — годовые официальные данные; колебания в малых регионах отражают малое число событий.', kz: 'Пунктир — 2025 ж. ҚР мәні. Өңірлік қатарлар — жылдық ресми деректер.' },
   // regional IMR forecast (stat.gov.kz + data/scripts/pipeline.py)
@@ -214,13 +214,57 @@ const STR = {
   'ds.title': { en: 'Dataset catalogue', ru: 'Каталог наборов данных', kz: 'Деректер жинағының каталогы' }, 'ds.sub': { en: 'Official and open sources are used as published; patient-level data stay de-identified and inside the hospital perimeter', ru: 'Официальные и открытые источники используются как опубликованы; данные пациентов остаются обезличенными внутри периметра больницы', kz: 'Ресми және ашық дереккөздер жарияланған күйінде қолданылады; науқас деректері аурухана ішінде, жасырын күйінде' },
   'ds.dataset': { en: 'Dataset', ru: 'Набор', kz: 'Жинақ' }, 'ds.kind': { en: 'Kind', ru: 'Тип', kz: 'Түрі' }, 'ds.year': { en: 'Year', ru: 'Год', kz: 'Жыл' }, 'ds.what': { en: 'What it contains', ru: 'Содержание', kz: 'Мазмұны' }, 'ds.license': { en: 'Licence', ru: 'Лицензия', kz: 'Лицензия' }, 'ds.open': { en: 'open', ru: 'открыть', kz: 'ашу' },
   'ds.rule': { en: 'Rule of the project: no real patient files, names, IIN, phones, addresses, MRNs or raw EHR exports are ever uploaded to the repository or the demo server.', ru: 'Правило проекта: реальные файлы пациентов, ФИО, ИИН, телефоны, адреса, номера карт и сырые выгрузки МИС никогда не загружаются в репозиторий или на демо-сервер.', kz: 'Жоба ережесі: нақты науқас файлдары, аты-жөні, ЖСН, телефон, мекенжай, карта нөмірлері репозиторийге немесе демо-серверге ешқашан жүктелмейді.' },
-  'ds.births': { en: 'Births', ru: 'Родившихся', kz: 'Туғандар' }, 'ds.release': { en: 'release', ru: 'релиз', kz: 'релиз' }, 'ds.infant': { en: 'infant', ru: 'младенческая', kz: 'нәресте' }, 'ds.microdata': { en: 'microdata', ru: 'микроданные', kz: 'микродеректер' }, 'ds.birthsWord': { en: 'births', ru: 'рождений', kz: 'туу' }, 'ds.weighted': { en: 'weighted', ru: 'взвешено', kz: 'салмақталған' },
+  'ds.births': { en: 'Births', ru: 'Родившихся', kz: 'Туғандар' }, 'ds.release': { en: 'release', ru: 'релиз', kz: 'шығарылым' }, 'ds.infant': { en: 'infant', ru: 'младенческая', kz: 'нәресте' }, 'ds.microdata': { en: 'microdata', ru: 'микроданные', kz: 'микродеректер' }, 'ds.birthsWord': { en: 'births', ru: 'рождений', kz: 'туу' }, 'ds.weighted': { en: 'weighted', ru: 'взвешено', kz: 'салмақталған' },
   'ds.gbd': { en: 'neonatal preterm birth', ru: 'недоношенность как причина смерти', kz: 'шала туу себебінен өлім' }, 'ds.gbdSub': { en: 'Global death rate per 100 000 with 95% uncertainty interval, 2015–2023', ru: 'Глобальная смертность на 100 000 с 95% интервалом неопределённости, 2015–2023', kz: '100 000-ға шаққандағы жаһандық өлім, 95% белгісіздік аралығы, 2015–2023' },
   'ds.gbdNote': { en: 'Benchmark context only — the export contains Global rows, not Kazakhstan', ru: 'Только контекст — выгрузка содержит глобальные строки, не Казахстан', kz: 'Тек контекст — экспортта жаһандық жолдар, Қазақстан емес' }, 'ds.deathsIn': { en: 'deaths in', ru: 'смертей в', kz: 'өлім,' },
   'ds.odinSub': { en: 'Coverage and openness of official statistics, Kazakhstan 2015 (0–100)', ru: 'Охват и открытость официальной статистики, Казахстан 2015 (0–100)', kz: 'Ресми статистиканың қамтуы мен ашықтығы, Қазақстан 2015 (0–100)' },
   'ds.odinNote': { en: 'Low openness of vital statistics in 2015 is why the platform cites each regional number with its source and year.', ru: 'Низкая открытость демографической статистики в 2015 г. — причина, по которой каждая региональная цифра на платформе подписана источником и годом.', kz: '2015 ж. демографиялық статистиканың төмен ашықтығы — әр өңірлік сан дереккөзі мен жылымен белгіленуінің себебі.' },
   'ds.microTitle': { en: 'neonatal mortality from the birth history (bh.sav)', ru: 'неонатальная смертность из истории рождений (bh.sav)', kz: 'туу тарихынан неонаталдық өлім (bh.sav)' }, 'ds.microSub': { en: 'Weighted NMR for births in the 60 months before interview, by region. Grey bars have < 5 events and are not usable as a regional rate.', ru: 'Взвешенная НС для рождений за 60 месяцев до опроса, по регионам. Серые столбцы — менее 5 событий, как региональный показатель не используются.', kz: 'Сауалнамаға дейінгі 60 айдағы туулар бойынша салмақталған НӨ. Сұр бағандар — 5-тен аз оқиға.' },
   'ds.smallN': { en: 'small samples', ru: 'малые выборки', kz: 'шағын іріктеме' }, 'ds.microNote': { en: 'National estimate from the same file: 3.63‰ (20 deaths / 6 233 births), consistent with the MICS brief (4‰) and UN IGME (3.94‰). Regional cells are shown for transparency only.', ru: 'Национальная оценка по тому же файлу: 3,63‰ (20 смертей / 6 233 рождений), согласуется с бюллетенем MICS (4‰) и UN IGME (3,94‰). Региональные ячейки показаны только для прозрачности.', kz: 'Сол файл бойынша ұлттық баға: 3,63‰ (20 / 6 233), MICS (4‰) және UN IGME (3,94‰) деректерімен сәйкес. Өңірлік ұяшықтар тек ашықтық үшін.' },
+  // Kazakh pass: strings that used to be hardcoded in components
+  'auth.demo': { en: 'Demo accounts are seeded by the backend (password {pw}). No real patient data is loaded.', ru: 'Демо-аккаунты создаёт сервер (пароль {pw}). Реальных данных пациентов нет.', kz: 'Демо аккаунттарды сервер жасайды (құпия сөз: {pw}). Нақты науқас деректері жүктелмеген.' },
+  'src.asf': { en: 'Asfendiyarov', ru: 'Асфендиярова', kz: 'Асфендияров' },
+  'sound.on': { en: 'Sound on', ru: 'Звук включён', kz: 'Дыбыс қосулы' }, 'sound.off': { en: 'Sound off', ru: 'Звук выключен', kz: 'Дыбыс өшірулі' },
+  'grp.demo': { en: 'Demographics', ru: 'Демография', kz: 'Демография' }, 'grp.vitals': { en: 'Vitals', ru: 'Витальные', kz: 'Өмірлік көрсеткіштер' },
+  'grp.gas': { en: 'Blood gas', ru: 'КЩС', kz: 'Қан газдары' }, 'grp.labs': { en: 'Labs', ru: 'Лаборатория', kz: 'Зертхана' }, 'grp.cat': { en: 'Categorical', ru: 'Категории', kz: 'Санаттар' },
+  'an.trend': { en: 'National trend', ru: 'Национальный тренд', kz: 'Ұлттық үрдіс' }, 'an.breakdown': { en: 'Breakdown', ru: 'Структура эффекта', kz: 'Әсер құрылымы' },
+  'prio.normal': { en: 'Normal', ru: 'Обычный', kz: 'Қалыпты' },
+  'due.min': { en: 'in {n} min', ru: 'через {n} мин', kz: '{n} мин кейін' }, 'due.h': { en: 'in {n} h', ru: 'через {n} ч', kz: '{n} сағ кейін' },
+  'due.lateMin': { en: 'overdue {n} min', ru: 'просрочено на {n} мин', kz: '{n} мин кешікті' }, 'due.lateH': { en: 'overdue {n} h', ru: 'просрочено на {n} ч', kz: '{n} сағ кешікті' },
+  'home.tasksSub': { en: 'Open tasks, nearest deadline first', ru: 'Открытые задачи, сначала ближайшие по сроку', kz: 'Ашық тапсырмалар, алдымен мерзімі жақындары' },
+  'home.tasksAll': { en: 'All tasks', ru: 'Все задачи', kz: 'Барлық тапсырма' }, 'home.tasksNone': { en: 'No open tasks.', ru: 'Открытых задач нет.', kz: 'Ашық тапсырмалар жоқ.' },
+  'home.unit': { en: 'Unit composition', ru: 'Состав отделения', kz: 'Бөлімше құрамы' },
+  'home.unitSub': { en: 'By respiratory support and gestational age', ru: 'По респираторной поддержке и сроку гестации', kz: 'Тыныс алуды қолдау мен гестациялық жас бойынша' },
+  'home.vent': { en: 'Respiratory support', ru: 'Респираторная поддержка', kz: 'Тыныс алуды қолдау' }, 'home.ga': { en: 'Gestational age', ru: 'Срок гестации', kz: 'Гестациялық жас' },
+  'home.roomAir': { en: 'Room air', ru: 'Без поддержки', kz: 'Қолдаусыз' },
+  'home.hbSub': { en: 'Signs and first steps for common situations', ru: 'Признаки и первые шаги в частых ситуациях', kz: 'Жиі кездесетін жағдайлардағы белгілер мен алғашқы қадамдар' },
+  'hb.when': { en: 'When to think of it', ru: 'Когда думать', kz: 'Қашан ойлану керек' }, 'hb.steps': { en: 'First steps', ru: 'Первые шаги', kz: 'Алғашқы қадамдар' },
+  'hb.escalate': { en: 'Call a senior doctor at once if', ru: 'Немедленно звать старшего врача, если', kz: 'Аға дәрігерді дереу шақыру керек, егер' },
+  'hb.link': { en: 'Link to the model', ru: 'Связь с моделью', kz: 'Модельмен байланыс' },
+  'hb.linkBody': { en: 'The patient card suggests this situation when the risk is raised by', ru: 'Карточка пациента подскажет эту ситуацию, если риск повышают', kz: 'Науқас картасы бұл жағдайды қауіпті мына көрсеткіштер арттырғанда ұсынады' },
+  'hb.sources': { en: 'Sources', ru: 'Источники', kz: 'Дереккөздер' }, 'hb.protocol': { en: 'Check against the current clinical protocol of the Kazakhstan MoH.', ru: 'Сверить с действующим клиническим протоколом МЗ РК.', kz: 'ҚР ДСМ қолданыстағы клиникалық хаттамасымен салыстыру керек.' },
+  'hb.search': { en: 'Search the handbook', ru: 'Поиск по справочнику', kz: 'Анықтамалықтан іздеу' }, 'hb.searchHint': { en: 'Search: "glucose", "apnoea"…', ru: 'Поиск: «кряхт», «сатурация»…', kz: 'Іздеу: «глюкоза», «апноэ»…' },
+  'hb.none': { en: 'Nothing found.', ru: 'Ничего не найдено.', kz: 'Ештеңе табылмады.' }, 'hb.patient': { en: 'Patient', ru: 'Пациент', kz: 'Науқас' }, 'hb.patientPick': { en: '— patient —', ru: '— пациент —', kz: '— науқас —' },
+  'hb.recheck': { en: 'Set a re-check', ru: 'Поставить контроль', kz: 'Бақылау қою' }, 'hb.toTasks': { en: 'Add to shift tasks', ru: 'В задачи смены', kz: 'Ауысым тапсырмаларына' },
+  'hb.sev.mild': { en: 'Mild', ru: 'Лёгкая', kz: 'Жеңіл' }, 'hb.sev.moderate': { en: 'Moderate', ru: 'Средняя', kz: 'Орташа' }, 'hb.severity': { en: 'severity', ru: 'тяжесть', kz: 'дәреже' },
+  'hb.ruOnly': { en: 'The card text stays in Russian until a neonatologist has reviewed a translation.', ru: '', kz: 'Карточка мәтіні неонатолог аударманы тексергенше орыс тілінде беріледі.' },
+  'hb.area.metabolism': { en: 'Metabolism', ru: 'Обмен веществ', kz: 'Зат алмасу' }, 'hb.area.liver': { en: 'Liver and blood', ru: 'Печень и кровь', kz: 'Бауыр және қан' }, 'hb.area.breathing': { en: 'Breathing', ru: 'Дыхание', kz: 'Тыныс алу' },
+  'hb.area.thermo': { en: 'Thermoregulation', ru: 'Терморегуляция', kz: 'Терморегуляция' }, 'hb.area.infection': { en: 'Infections', ru: 'Инфекции', kz: 'Инфекциялар' },
+  'hb.f.glucose': { en: 'glucose', ru: 'глюкоза', kz: 'глюкоза' }, 'hb.f.bilirubin': { en: 'bilirubin', ru: 'билирубин', kz: 'билирубин' }, 'hb.f.resp_rate': { en: 'RR', ru: 'ЧД', kz: 'ТАЖ' }, 'hb.f.vent_mode': { en: 'ventilation mode', ru: 'режим дыхания', kz: 'тыныс алу режимі' },
+  'hb.f.crp': { en: 'CRP', ru: 'СРБ', kz: 'СРБ' }, 'hb.f.wbc': { en: 'WBC', ru: 'лейкоциты', kz: 'лейкоциттер' }, 'hb.f.platelets': { en: 'platelets', ru: 'тромбоциты', kz: 'тромбоциттер' }, 'hb.f.lactate': { en: 'lactate', ru: 'лактат', kz: 'лактат' },
+  'hb.f.temperature': { en: 'temperature', ru: 'температура', kz: 'дене қызуы' }, 'hb.f.map_mmhg': { en: 'MAP', ru: 'среднее АД', kz: 'орташа АҚ' }, 'hb.f.heart_rate': { en: 'HR', ru: 'ЧСС', kz: 'ЖСЖ' },
+};
+
+/* Demo seed records are stored in English; real records show as entered. */
+const DATA_TEXT = {
+  'ELBW, early-onset sepsis suspected': { ru: 'ЭНМТ, подозрение на ранний неонатальный сепсис', kz: 'Дене салмағы экстремалды төмен, ерте неонаталдық сепсиске күдік' },
+  'Extreme prematurity, suspected PDA': { ru: 'Глубокая недоношенность, подозрение на ОАП', kz: 'Терең шала туылу, ашық артериялық түтікке күдік' },
+  'Respiratory Distress Syndrome': { ru: 'Респираторный дистресс-синдром', kz: 'Респираторлық дистресс-синдром' },
+  'Transient tachypnoea of newborn': { ru: 'Транзиторное тахипноэ новорождённого', kz: 'Жаңа туған нәрестенің өтпелі тахипноэсі' },
+  'Blood culture results due': { ru: 'Ожидается результат посева крови', kz: 'Қан себіндісінің нәтижесін күту' },
+  'Repeat blood gas': { ru: 'Повторить анализ газов крови', kz: 'Қан газдарын қайта талдау' },
+  'Echocardiogram for suspected PDA': { ru: 'Эхокардиография при подозрении на ОАП', kz: 'Ашық артериялық түтікке күдікпен эхокардиография' },
+  'Review feeding plan with dietitian': { ru: 'Обсудить план кормления с диетологом', kz: 'Тамақтандыру жоспарын диетологпен қарау' },
 };
 
 const Ctx = createContext({ lang: 'ru', setLang: () => {}, t: (k) => k });
@@ -236,6 +280,7 @@ export function I18nProvider({ children }) {
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 export const useT = () => useContext(Ctx);
+export const DataText = ({ text }) => { const { lang } = useT(); return DATA_TEXT[text]?.[lang] ?? text; };
 
 export function LangSwitch() {
   const { lang, setLang } = useT();

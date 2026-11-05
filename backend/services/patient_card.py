@@ -37,7 +37,7 @@ SYNTHETIC_NOTICE = (
     "Не является диагнозом или медицинской рекомендацией."
 )
 CLINICAL_NOTICE = (
-    "Поддержка принятия решений. Окончательное решение принимает врач (Закон РК № 230-VIII). "
+    "Поддержка принятия решений. Окончательное решение принимает врач (система низкой автономности, ст. 17 Закона РК № 230-VIII). "
     "Не является диагнозом или медицинской рекомендацией."
 )
 
@@ -383,7 +383,7 @@ def render_patient_pdf(bundle: dict[str, Any], output_path: Path | None = None) 
 
 def score_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
     """Score a 12-h aggregate bundle with the live RiskEngine and attach a ``prediction`` block."""
-    from services.ml_engine import risk_engine, tier_for
+    from services.ml_engine import ALERT_PERCENT, risk_engine, tier_for
     from services.shap_service import waterfall
 
     feats, missing = coerce_features(bundle.get("features", {}))
@@ -394,7 +394,7 @@ def score_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
             engine_feats[k] = float(risk_engine.medians[k])
     result = risk_engine.predict(engine_feats)
     rows, _ = waterfall(result, top_k=31)
-    threshold = 0.389  # operating point of the initial 12-h model (GovTech Camp presentation); kept as the alert line
+    threshold = ALERT_PERCENT / 100  # the same alert line as the ward
     risk = float(result.probability)
     top = [{"feature": r["feature"], "label": r["label"], "value": r["value"], "unit": "", "contribution": round(r["shap"], 5),
             "direction": "raises" if r["shap"] >= 0 else "lowers"} for r in rows if r["feature"] != "other"]
