@@ -1,0 +1,39 @@
+# GovTech hackathon server (shared VPS): the site https://winnie.govtech-kz.com is proxied by the organisers to port 8023.
+# Only the frontend (nginx, which also proxies /api and WebSockets to the backend) is published, on 8023.
+# Postgres and the API stay inside the compose network, so nothing clashes with other teams' ports.
+#
+#   docker compose -p winnie -f docker-compose.yml -f deploy/docker-compose.winnie.yml up -d --build
+#
+# Secrets come from .env next to docker-compose.yml (never committed): NEO_JWT_SECRET, optional OPENAI_API_KEY.
+services:
+  db:
+    # plain Postgres instead of the 2.7 GB TimescaleDB image: the team's disk quota is small, and database.init_db
+    # skips the hypertable step when TimescaleDB is absent (vital signs stay an ordinary table).
+    image: postgres:16-alpine
+    ports: !override []
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        SLIM: "1"   # 5 GB team quota: smaller image (no shap package, test suites, bytecode caches)
+    ports: !override []
+    restart: unless-stopped
+    # one worker: several workers race to create tables on an empty database (duplicate user_role type); enough for a demo
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips=*"]
+    healthcheck:
+      start_period: 600s   # the first boot trains the risk models before the API answers
+    environment:
+      NEO_JWT_SECRET: ${NEO_JWT_SECRET:?set NEO_JWT_SECRET in .env}
+      NEO_ENVIRONMENT: production
+      NEO_SEED_DEMO_DATA: "true"   # demo accounts for the hackathon jury
+      NEO_CORS_ORIGINS: '["https://winnie.govtech-kz.com"]'
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.static   # ships the prebuilt dist/ (run `npm run build` before packing); no Node.js on the server
+    ports: !override
+      - "8023:80"
+    restart: unless-stopped

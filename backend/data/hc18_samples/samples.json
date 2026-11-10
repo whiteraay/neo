@@ -1,0 +1,58 @@
+[
+ {
+  "filename": "030_HC.png",
+  "pixel_size_mm": 0.0542289407357,
+  "reference_hc_mm": 64.3,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "188_HC.png",
+  "pixel_size_mm": 0.157175473869,
+  "reference_hc_mm": 131.1,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "368_HC.png",
+  "pixel_size_mm": 0.138930728038,
+  "reference_hc_mm": 166.21,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "386_HC.png",
+  "pixel_size_mm": 0.132256071819,
+  "reference_hc_mm": 171.65,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "561_HC.png",
+  "pixel_size_mm": 0.135623587144,
+  "reference_hc_mm": 176.61,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "532_2HC.png",
+  "pixel_size_mm": 0.152666008834,
+  "reference_hc_mm": 185.12,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "704_HC.png",
+  "pixel_size_mm": 0.260371294889,
+  "reference_hc_mm": 269.0,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ },
+ {
+  "filename": "801_HC.png",
+  "pixel_size_mm": 0.296851326438,
+  "reference_hc_mm": 329.26,
+  "split": "validation (held out)",
+  "source": "HC18, van den Heuvel et al. 2018, CC BY 4.0"
+ }
+]

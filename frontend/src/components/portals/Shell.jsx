@@ -5,13 +5,14 @@ import SoundToggle from '../SoundToggle.jsx';
 import { Badge } from '../../lib/ui.jsx';
 import { useT, LangSwitch } from '../../lib/i18n.jsx';
 import { api } from '../../services/api.js';
+import { hospitalName, centreName } from '../../lib/official.js';
 
 /** Shared portal chrome: sidebar with portal-specific nav, header with language switch, footer disclaimer. */
 export default function Shell({ user, portalLabel, nav, view, setView, title, sub, onLogout, children, accent = '#0B2239', headerExtra = null }) {
-  const { t } = useT();
+  const { t, tx, lang } = useT();
   const [menu, setMenu] = useState(false);
   const NavList = () => (
-    <nav className="grid" aria-label="Sections">
+    <nav className="grid" aria-label={t('shell.sections')}>
       {nav.map(([id, label, Icon]) => (
         <button key={id} type="button" className={`nav-item ${view === id ? 'active' : ''}`} onClick={() => { setView(id); setMenu(false); }}>
           <span className="w-7 h-7 rounded grid place-items-center border border-line shrink-0" style={{ background: view === id ? accent : '#fff', color: view === id ? '#fff' : '#52708A' }}><Icon size={14} /></span>{label}
@@ -26,15 +27,15 @@ export default function Shell({ user, portalLabel, nav, view, setView, title, su
         <NavList />
         <div className="mt-auto mx-4 card p-3 text-xs">
           <div className="flex items-center gap-2 mb-1"><span className={`dot ${api.online ? 'dot-live' : ''}`} style={!api.online ? { background: '#F59E0B' } : undefined} /><span className="font-semibold">{api.online ? t('online') : t('offline')}</span></div>
-          <div className="muted">{user.hospital.name_kz || user.hospital.name}</div>
+          <div className="muted">{hospitalName(user.hospital, lang, tx)}</div>
         </div>
       </aside>
       <div className="min-w-0 flex flex-col">
         <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-line px-4 py-2.5" style={{ background: "rgba(246,244,239,.88)", backdropFilter: "blur(10px)" }}>
-          <button type="button" className="btn md:hidden px-2" aria-label="Menu" onClick={() => setMenu((m) => !m)}><Menu size={16} /></button>
+          <button type="button" className="btn md:hidden px-2" aria-label={t('shell.menu')} onClick={() => setMenu((m) => !m)}><Menu size={16} /></button>
           <div className="min-w-0 flex-1"><div className="display truncate text-[20px]">{title}</div>{sub && <div className="muted text-xs truncate">{sub}</div>}</div>
           {headerExtra}
-          <div className="hidden sm:flex items-center gap-2"><Badge tone="primary"><Building2 size={12} />{user.hospital.city}</Badge><Badge tone="violet"><User size={12} />{user.full_name}</Badge></div>
+          <div className="hidden sm:flex items-center gap-2"><Badge tone="primary"><Building2 size={12} />{centreName(user.hospital.city, lang)}</Badge><Badge tone="violet"><User size={12} />{user.full_name}</Badge></div>
           <LangSwitch />
           <SoundToggle />
           <button type="button" className="btn px-2" aria-label={t('signout')} onClick={onLogout}><LogOut size={16} /></button>

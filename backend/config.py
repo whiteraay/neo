@@ -1,7 +1,7 @@
 """Application settings loaded from environment variables (.env supported)."""
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     regional_bundle_path: str = ""  # empty = backend/data/regional_bundle.json
     seed_demo_data: bool = True
     telemetry_hz: float = 4.0  # WebSocket frame rate for CV telemetry
+    openai_api_key: SecretStr = Field(default=SecretStr(""), validation_alias="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-4.1-mini", validation_alias="OPENAI_MODEL")
     retrain_feedback_threshold: int = 25  # clinician sign-offs that trigger an automatic retrain
 
 

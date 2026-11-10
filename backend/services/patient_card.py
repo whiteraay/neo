@@ -37,7 +37,7 @@ SYNTHETIC_NOTICE = (
     "Не является диагнозом или медицинской рекомендацией."
 )
 CLINICAL_NOTICE = (
-    "Поддержка принятия решений. Окончательное решение принимает врач (Закон РК № 230-VIII). "
+    "Поддержка принятия решений. Окончательное решение принимает врач (система низкой автономности, ст. 17 Закона РК № 230-VIII). "
     "Не является диагнозом или медицинской рекомендацией."
 )
 
@@ -256,10 +256,11 @@ def render_patient_pdf(bundle: dict[str, Any], output_path: Path | None = None) 
     """Render the patient card. Returns PDF bytes (also written to ``output_path`` if given)."""
     regular_font, bold_font = register_pdf_fonts()
     styles = getSampleStyleSheet()
-    body = ParagraphStyle("BodyRu", parent=styles["BodyText"], fontName=regular_font, fontSize=9, leading=12, textColor=colors.HexColor("#243447"))
+    body = ParagraphStyle("BodyRu", parent=styles["BodyText"], fontName=regular_font, fontSize=8.5, leading=11, textColor=colors.HexColor("#243447"))
     small = ParagraphStyle("SmallRu", parent=body, fontSize=7.5, leading=10, textColor=colors.HexColor("#607284"))
-    title = ParagraphStyle("TitleRu", parent=body, fontName=bold_font, fontSize=18, leading=22, textColor=colors.HexColor("#14213D"))
+    title = ParagraphStyle("TitleRu", parent=body, fontName=bold_font, fontSize=15, leading=19, textColor=colors.HexColor("#14213D"))
     section = ParagraphStyle("SectionRu", parent=body, fontName=bold_font, fontSize=10, leading=13, textColor=colors.HexColor("#163a45"), spaceBefore=7, spaceAfter=5)
+    section.keepWithNext = True
     center = ParagraphStyle("CenterRu", parent=body, alignment=TA_CENTER)
     left_bold = ParagraphStyle("BoldRu", parent=body, fontName=bold_font, alignment=TA_LEFT)
     table_header = ParagraphStyle("TableHeaderRu", parent=left_bold, fontSize=8.5, leading=10, textColor=colors.white)
@@ -292,7 +293,8 @@ def render_patient_pdf(bundle: dict[str, Any], output_path: Path | None = None) 
         canvas.restoreState()
 
     story: list[Any] = [
-        Paragraph("Карта пациента NICU", title),
+        Paragraph("КЛИНИЧЕСКАЯ СВОДКА · ОРИТН", title),
+        Paragraph(f"Обращение № {escape(str(encounter.get('encounter_id', '—')))} · Дата документа: {escape(str(encounter.get('document_at') or prediction.get('generated_at', '—')))}", small),
         Paragraph("Демонстрационный документ для проверки интеграции данных, ML-модели и интерфейса врача." if synthetic
                   else "Сводка оценки риска для врачебной проверки и подписи.", small),
         Spacer(1, 5 * mm),
@@ -340,7 +342,7 @@ def render_patient_pdf(bundle: dict[str, Any], output_path: Path | None = None) 
         for name in names:
             value = _num(features.get(name)) if features.get(name) not in (None, "") else None
             rows.append([Paragraph(escape(FEATURE_LABELS[name]), body), Paragraph(value_text(value), body), Paragraph(FEATURE_UNITS.get(name, ""), small), Paragraph(feature_flag(name, value), small)])
-        table = Table(rows, colWidths=[76 * mm, 32 * mm, 33 * mm, 37 * mm], repeatRows=1)
+        table = Table(rows, colWidths=[76 * mm, 32 * mm, 33 * mm, 37 * mm], repeatRows=1, rowSplitRange=(4, -3))
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#14213D")), ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
             ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#becbce")), ("LINEBELOW", (0, 1), (-1, -2), 0.2, colors.HexColor("#dfe6e8")),
@@ -383,7 +385,7 @@ def render_patient_pdf(bundle: dict[str, Any], output_path: Path | None = None) 
 
 def score_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
     """Score a 12-h aggregate bundle with the live RiskEngine and attach a ``prediction`` block."""
-    from services.ml_engine import risk_engine, tier_for
+    from services.ml_engine import ALERT_PERCENT, risk_engine, tier_for
     from services.shap_service import waterfall
 
     feats, missing = coerce_features(bundle.get("features", {}))
@@ -394,7 +396,7 @@ def score_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
             engine_feats[k] = float(risk_engine.medians[k])
     result = risk_engine.predict(engine_feats)
     rows, _ = waterfall(result, top_k=31)
-    threshold = 0.389  # operating point of the initial 12-h model (GovTech Camp presentation); kept as the alert line
+    threshold = ALERT_PERCENT / 100  # the same alert line as the ward
     risk = float(result.probability)
     top = [{"feature": r["feature"], "label": r["label"], "value": r["value"], "unit": "", "contribution": round(r["shap"], 5),
             "direction": "raises" if r["shap"] >= 0 else "lowers"} for r in rows if r["feature"] != "other"]

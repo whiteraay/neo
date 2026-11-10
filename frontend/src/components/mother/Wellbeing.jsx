@@ -81,7 +81,7 @@ export function Materials() {
           <div className="flex flex-wrap items-center gap-2"><Badge tone="primary">{topicLabel(m.topic, lang)}</Badge><Badge tone={m.lang === 'RU' ? 'low' : 'muted'}>{m.lang === 'RU' ? t('mom.inRu') : t('mom.inEn')}</Badge></div>
           <div className="font-semibold leading-snug">{m.title}</div>
           <div className="text-sm muted">{m.summary[lang] || m.summary.ru}</div>
-          <div className="text-xs font-medium flex items-center gap-1 mt-1 text-primary"><BookOpen size={12} />{m.source}<ExternalLink size={12} /></div>
+          <div className="text-xs font-medium flex items-center gap-1 mt-1 text-primary"><BookOpen size={12} />{m.source[lang] || m.source.ru}<ExternalLink size={12} /></div>
         </a>))}</div>
       <p className="muted text-xs">{t('mom.mat.note')}</p>
     </div>

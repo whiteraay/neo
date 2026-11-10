@@ -11,7 +11,7 @@ from database import get_db
 from models.clinical import ClinicalTask
 from models.user import User, UserRole
 from services import audit
-from services.security import require_roles
+from services.security import get_accessible_patient, require_roles
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 DOCTORS = require_roles(UserRole.neonatologist, UserRole.admin)
@@ -47,6 +47,8 @@ async def list_tasks(include_done: bool = False, db: AsyncSession = Depends(get_
 
 @router.post("", response_model=TaskOut, status_code=status.HTTP_201_CREATED)
 async def create_task(body: TaskIn, request: Request, db: AsyncSession = Depends(get_db), user: User = Depends(DOCTORS)):
+    if body.patient_id:
+        await get_accessible_patient(db, user, body.patient_id)
     t = ClinicalTask(hospital_id=user.hospital_id, patient_id=body.patient_id, title=body.title, priority=body.priority, created_by=user.id,
                      due_at=datetime.now(timezone.utc) + timedelta(minutes=body.due_in_minutes) if body.due_in_minutes else None)
     db.add(t)

@@ -1,0 +1,28 @@
+{
+  "source": "HC18 Grand Challenge, van den Heuvel et al. 2018, https://zenodo.org/records/1327317 (CC BY 4.0)",
+  "model": "U-Net (base 24, 4369849 parameters), input 256x384 grayscale, BCE + Dice, 100 epochs, GPU affine/gamma augmentation, flip TTA",
+  "split": "validation = 10 % of subjects (by id), never seen in training",
+  "n_train": 902,
+  "n_val": 97,
+  "n_test": 335,
+  "val_hc_mae_mm": 2.16,
+  "val_hc_median_ae_mm": 1.44,
+  "val_dice": 0.9657,
+  "val_within_3mm": 0.711,
+  "train_hc_mm": {
+    "min": 44.3,
+    "median": 174.06,
+    "max": 346.4
+  },
+  "test_predicted": 335,
+  "test_hc_mm": {
+    "min": 59.14,
+    "median": 173.96,
+    "max": 356.52
+  },
+  "input": {
+    "height": 256,
+    "width": 384,
+    "scale": "1/255"
+  }
+}

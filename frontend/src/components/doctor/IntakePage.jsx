@@ -4,8 +4,10 @@ import { Card, Badge } from '../../lib/ui.jsx';
 import { useT } from '../../lib/i18n.jsx';
 import { api } from '../../services/api.js';
 import { sfx } from '../../lib/fx.js';
+import { DocumentComposer } from './Documents.jsx';
 import { OriginPill } from '../DataOrigin.jsx';
 import { ADMISSION_FIELDS, ADMISSION_DEFAULTS, BUNDLE_FEATURES, BUNDLE_LABELS } from '../../lib/intakeMock.js';
+import { locale, featName, admissionWarning, admissionOption } from '../../lib/i18n/doctor.js';
 
 const BAND_TONE = { low: 'low', moderate: 'moderate', elevated: 'high', high: 'critical' };
 const BAND_COLOR = { low: '#16A34A', moderate: '#F59E0B', elevated: '#F97316', high: '#E5484D' };
@@ -13,21 +15,21 @@ const fmtVal = (v) => (v == null || v === '' ? '—' : typeof v === 'number' ? (
 
 /* ---------- Admission-time risk card (ported AdmissionRiskCard, 15 Asfendiyarov features) ---------- */
 export function AdmissionRiskCard({ patientId }) {
-  const { t, lang } = useT();
+  const { t, tx, lang } = useT();
   const [form, setForm] = useState(ADMISSION_DEFAULTS); const [res, setRes] = useState(null); const [busy, setBusy] = useState(false); const [err, setErr] = useState(null); const [info, setInfo] = useState(null);
   useEffect(() => { api.admissionInfo().then(setInfo).catch(() => {}); }, []);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const run = async () => { setBusy(true); setErr(null); try { const r = await api.predictAdmission(form, patientId, !!patientId); setRes(r); (r.risk_band === 'high' ? sfx.alert : r.risk_band === 'elevated' ? sfx.warn : sfx.success)(); } catch (e) { setErr(e.message); sfx.error(); } finally { setBusy(false); } };
   const L = (f) => f.label[lang] || f.label.ru;
   const field = (f) => (
-    <label key={f.key} className="text-xs min-w-0" title={L(f)}><span className="muted block leading-tight mb-1">{L(f)}{f.unit ? ` · ${f.unit}` : ''}</span>
+    <label key={f.key} className="text-xs min-w-0" title={L(f)}><span className="muted block leading-tight mb-1">{L(f)}{f.unit ? ` · ${tx(f.unit)}` : ''}</span>
       {f.kind === 'number' ? <input type="number" className="input px-2 py-1.5 mono" min={f.min} max={f.max} step={f.step || 1} value={form[f.key] ?? ''} onChange={(e) => set(f.key, e.target.value === '' ? '' : parseFloat(e.target.value))} />
-        : <select className="px-2 py-1.5" value={form[f.key]} onChange={(e) => set(f.key, e.target.value)}>{(f.kind === 'yesno' ? [{ value: '0', label: t('no') }, { value: '1', label: t('yes') }] : f.options).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select>}
+        : <select className="px-2 py-1.5" value={form[f.key]} onChange={(e) => set(f.key, e.target.value)}>{(f.kind === 'yesno' ? [{ value: '0', label: t('no') }, { value: '1', label: t('yes') }] : f.options).map((o) => <option key={o.value} value={o.value}>{admissionOption(t, o.label)}</option>)}</select>}
     </label>
   );
   const v = res?.validation || info?.metrics;
   return (
-    <Card title={<span className="flex items-center gap-2"><Baby size={16} />{t('adm.title')}</span>} sub={t('adm.sub')} right={<div className="flex items-center gap-2"><OriginPill kind="real">Асфендиярова · 1 105 · 2021–2025</OriginPill><button type="button" className="btn btn-primary" onClick={run} disabled={busy}>{busy ? <RefreshCw size={14} className="animate-spin" /> : <FlaskConical size={14} />}{t('adm.run')}</button></div>}>
+    <Card title={<span className="flex items-center gap-2"><Baby size={16} />{t('adm.title')}</span>} sub={t('adm.sub')} right={<div className="flex flex-wrap items-center gap-2"><OriginPill kind="real">{t('src.asf')} · 1 105 · 2021–2025</OriginPill><button type="button" className="btn btn-primary" onClick={run} disabled={busy}>{busy ? <RefreshCw size={14} className="animate-spin" /> : <FlaskConical size={14} />}{t('adm.run')}</button></div>}>
       {/* minmax(0,1fr): let the form column shrink instead of pushing the result column out of the card */}
       <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-5">
         <div className="grid gap-3 content-start min-w-0">
@@ -45,12 +47,12 @@ export function AdmissionRiskCard({ patientId }) {
                 <div className="mt-2 flex items-center justify-center gap-2"><Badge tone={BAND_TONE[res.risk_band]}>{t(`adm.band.${res.risk_band}`)}</Badge><span className="mono text-xs muted">{t('adm.threshold')} {(res.operating_threshold * 100).toFixed(1)}%</span></div>
                 {res.threshold_crossed && <div className="mt-2 text-xs font-semibold flex items-center justify-center gap-1" style={{ color: '#C62828' }}><AlertTriangle size={13} />{t('adm.crossed')}</div>}
               </div>
-              <div><div className="eyebrow mb-1">{t('adm.factors')}</div><div className="muted text-[11px] leading-snug mb-1.5">{t('adm.factors.hint')}</div><div className="grid grid-cols-1 gap-1">{res.top_factors.map((f) => <div key={f.feature} className="flex items-center gap-2 text-xs"><span className="w-20 h-1.5 rounded-full bg-line overflow-hidden shrink-0"><span className="block h-full" style={{ width: `${Math.min(100, Math.abs(f.contribution) * 120)}%`, background: f.direction === 'raises' ? '#E5484D' : '#16A34A' }} /></span><span className="truncate flex-1 min-w-0" title={lang === 'en' && f.label_en ? f.label_en : f.label}>{lang === 'en' && f.label_en ? f.label_en : f.label}</span><span className="mono muted">{fmtVal(f.value)}{f.unit ? ` ${f.unit}` : ''}</span><span className="mono font-semibold" style={{ color: f.direction === 'raises' ? '#C62828' : '#15803D' }}>{f.contribution > 0 ? '+' : ''}{f.contribution.toFixed(2)}</span></div>)}</div></div>
-              {res.input_warnings?.length > 0 && <details className="text-xs"><summary className="muted cursor-pointer">{res.input_warnings.length} {t('adm.warnings')}</summary><ul className="mt-1 grid gap-0.5 muted list-disc pl-4">{res.input_warnings.map((w) => <li key={w}>{w}</li>)}</ul></details>}
+              <div><div className="eyebrow mb-1">{t('adm.factors')}</div><div className="muted text-[11px] leading-snug mb-1.5">{t('adm.factors.hint')}</div><div className="grid grid-cols-1 gap-1">{res.top_factors.map((f) => <div key={f.feature} className="flex items-center gap-2 text-xs"><span className="w-20 h-1.5 rounded-full bg-line overflow-hidden shrink-0"><span className="block h-full" style={{ width: `${Math.min(100, Math.abs(f.contribution) * 120)}%`, background: f.direction === 'raises' ? '#E5484D' : '#16A34A' }} /></span><span className="truncate flex-1 min-w-0" title={lang === 'en' && f.label_en ? f.label_en : tx(f.label)}>{lang === 'en' && f.label_en ? f.label_en : tx(f.label)}</span><span className="mono muted">{fmtVal(f.value)}{f.unit ? ` ${tx(f.unit)}` : ''}</span><span className="mono font-semibold" style={{ color: f.direction === 'raises' ? '#C62828' : '#15803D' }}>{f.contribution > 0 ? '+' : ''}{f.contribution.toFixed(2)}</span></div>)}</div></div>
+              {res.input_warnings?.length > 0 && <details className="text-xs"><summary className="muted cursor-pointer">{res.input_warnings.length} {t('adm.warnings')}</summary><ul className="mt-1 grid gap-0.5 muted list-disc pl-4">{res.input_warnings.map((w) => <li key={w}>{admissionWarning(t, tx, w)}</li>)}</ul></details>}
             </>
           ) : <div className="h-40 grid place-items-center muted text-sm border border-dashed border-line-strong rounded-md text-center px-4">{t('adm.empty')}</div>}
           {v && <div className="text-xs grid grid-cols-2 gap-x-3 gap-y-1 pt-3 border-t border-line"><span className="muted">{t('adm.test')}</span><span className="mono">{res?.validation?.test_period || '2024–2025'}{v.n_test || v.n ? ` · n=${v.n_test || v.n}` : ''}</span><span className="muted">AUROC</span><span className="mono">{v.auroc?.toFixed(3)}{v.auroc_95ci ? ` (${v.auroc_95ci[0]}–${v.auroc_95ci[1]})` : ''}</span><span className="muted">{t('adm.sens')}</span><span className="mono">{v.sensitivity != null ? Math.round(v.sensitivity * 100) + '%' : '—'} / {v.specificity != null ? Math.round(v.specificity * 100) + '%' : '—'}</span></div>}
-          <p className="muted text-[11px] leading-snug">{res?.disclaimer || info?.disclaimer || ''}</p>
+          <p className="muted text-[11px] leading-snug">{tx(res?.disclaimer || info?.disclaimer || '')}</p>
         </div>
       </div>
     </Card>
@@ -64,7 +66,7 @@ function Appointments({ patientRef, patientLabel, clinician }) {
   const load = () => api.appointments().then(setItems).catch(() => setItems([]));
   useEffect(() => { load(); }, []);
   const add = async (e) => { e.preventDefault(); if (!form.scheduled_at || form.reason.trim().length < 2) return; setBusy(true); try { await api.addAppointment({ ...form, patient_ref: patientRef, patient_label: patientLabel, clinician_name: clinician, scheduled_at: new Date(form.scheduled_at).toISOString() }); setForm((f) => ({ ...f, reason: '' })); await load(); } finally { setBusy(false); } };
-  const fmt = (iso) => new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : 'ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const fmt = (iso) => new Date(iso).toLocaleString(locale(lang), { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   const TYPES = ['re-examination', 'consultation', 'transfer', 'family', 'other'];
   return (
     <Card title={<span className="flex items-center gap-2"><CalendarPlus size={16} />{t('appt.title')}</span>} sub={t('appt.sub')}>
@@ -85,7 +87,7 @@ function Appointments({ patientRef, patientLabel, clinician }) {
 
 /* ---------- Page: bundle import + 12-h aggregate scoring + PDF card ---------- */
 export default function IntakePage({ user, patients }) {
-  const { t, lang } = useT();
+  const { t, tx } = useT();
   const [source, setSource] = useState('demo'); const [bundle, setBundle] = useState(null); const [busy, setBusy] = useState(false); const [err, setErr] = useState(null); const [pdf, setPdf] = useState(null); const fileRef = useRef(null);
   const loadDemo = async () => { setBusy(true); setErr(null); try { setBundle(await api.intakeDemo()); } catch (e) { setErr(e.message); } finally { setBusy(false); } };
   useEffect(() => { loadDemo(); }, []); // eslint-disable-line
@@ -112,33 +114,32 @@ export default function IntakePage({ user, patients }) {
       {bundle && p && (
         <div className="grid gap-4 xl:grid-cols-[1fr_360px]">
           <div className="grid gap-4 min-w-0">
-            <Card title={<span className="flex items-center gap-2"><Baby size={16} />{pat.full_name}</span>} sub={`${pat.patient_id} · ${enc.encounter_id} · ${enc.institution}`} right={<Badge tone={BAND_TONE[p.risk_band]}>{t(`adm.band.${p.risk_band}`)} {p.risk_percent}%</Badge>}>
+            <Card title={<span className="flex items-center gap-2"><Baby size={16} />{tx(pat.full_name)}</span>} sub={`${pat.patient_id} · ${enc.encounter_id} · ${tx(enc.institution)}`} right={<Badge tone={BAND_TONE[p.risk_band]}>{t(`adm.band.${p.risk_band}`)} {p.risk_percent}%</Badge>}>
               <div className="grid sm:grid-cols-3 gap-x-6 gap-y-1 text-xs">
-                {[[t('intake.sexDob'), `${pat.sex} / ${pat.date_of_birth || '—'}`], [t('intake.ga'), pat.gestational_age || '—'], [t('intake.weight'), pat.birth_weight_g ? `${pat.current_weight_g ?? pat.birth_weight_g} g (${t('intake.atBirth')} ${pat.birth_weight_g} g)` : '—'], [t('intake.dept'), enc.department], [t('intake.admitted'), enc.admitted_at || '—'], [t('intake.window'), `12 h → ${enc.prediction_time || '—'}`], [t('intake.dx'), enc.admission_diagnosis], [t('intake.clinician'), enc.attending_clinician || user.full_name]].map(([k, v]) => <div key={k} className="flex justify-between gap-3 py-1 border-b border-line"><span className="muted">{k}</span><span className="text-right font-medium truncate">{v}</span></div>)}
+                {[[t('intake.sexDob'), `${t(`opt.sex.${pat.sex}`, pat.sex)} / ${pat.date_of_birth || '—'}`], [t('intake.ga'), tx(pat.gestational_age) || '—'], [t('intake.weight'), pat.birth_weight_g ? `${pat.current_weight_g ?? pat.birth_weight_g} ${t('u.g')} (${t('intake.atBirth')} ${pat.birth_weight_g} ${t('u.g')})` : '—'], [t('intake.dept'), tx(enc.department)], [t('intake.admitted'), enc.admitted_at || '—'], [t('intake.window'), `${t('u.hN', { n: 12 })} → ${enc.prediction_time || '—'}`], [t('intake.dx'), tx(enc.admission_diagnosis)], [t('intake.clinician'), tx(enc.attending_clinician) || user.full_name]].map(([k, v]) => <div key={k} className="flex justify-between gap-3 py-1 border-b border-line"><span className="muted">{k}</span><span className="text-right font-medium truncate">{v}</span></div>)}
               </div>
             </Card>
             <div className="grid md:grid-cols-2 gap-4">
               {[[t('intake.vitals'), vitals], [t('intake.labs'), labs]].map(([title, keys]) => <Card key={title} title={title} sub={`${keys.filter((k) => !missing.has(k)).length}/${keys.length} ${t('intake.present')}`}>
-                <table className="table"><tbody>{keys.map((k) => { const v = bundle.features[k]; const f = flag(k, v); return <tr key={k}><td className="text-xs py-1.5">{BUNDLE_LABELS[k]}</td><td className="mono text-xs text-right py-1.5">{fmtVal(v)}</td><td className="py-1.5 text-right">{missing.has(k) ? <span className="origin origin-estimate" style={{ padding: '0 6px' }}>{t('intake.imputed')}</span> : f ? <span className="origin origin-synthetic" style={{ padding: '0 6px' }}>{t('intake.check')}</span> : null}</td></tr>; })}</tbody></table>
+                <table className="table"><tbody>{keys.map((k) => { const v = bundle.features[k]; const f = flag(k, v); return <tr key={k}><td className="text-xs py-1.5">{t(`bf.${k}`, BUNDLE_LABELS[k])}</td><td className="mono text-xs text-right py-1.5">{fmtVal(v)}</td><td className="py-1.5 text-right">{missing.has(k) ? <span className="origin origin-estimate" style={{ padding: '0 6px' }}>{t('intake.imputed')}</span> : f ? <span className="origin origin-synthetic" style={{ padding: '0 6px' }}>{t('intake.check')}</span> : null}</td></tr>; })}</tbody></table>
               </Card>)}
             </div>
-            {pdf ? <Card title={<span className="flex items-center gap-2"><FileText size={16} />{t('intake.card')}</span>} sub={t('intake.cardSub')} right={<a className="btn" href={pdf} download={`${pat.patient_id}_patient_card.pdf`}><Download size={14} />PDF</a>}><iframe title={t('intake.card')} src={pdf} className="w-full h-[620px] rounded-md border border-line" /></Card>
-              : <div className="card p-4 muted text-sm flex items-center gap-2"><FileText size={16} />{t('intake.pdfOffline')}</div>}
+            <DocumentComposer bundle={bundle} previewUrl={pdf} user={user} patients={patients || []} onSelectPatient={async (id) => { const selected = await api.intakePatientBundle(id); setBundle(selected); setSource('hospital'); }} />
           </div>
           <div className="grid gap-4 self-start">
-            <Card title={t('intake.assessment')} sub={`${p.model_name} · ${p.model_version}`} right={<OriginPill kind="model">24 h</OriginPill>}>
+            <Card title={t('intake.assessment')} sub={`${p.model_name} · ${p.model_version}`} right={<OriginPill kind="model">{t('u.hN', { n: 24 })}</OriginPill>}>
               <div className="text-center rounded-lg border p-4" style={{ borderColor: BAND_COLOR[p.risk_band] + '66', background: BAND_COLOR[p.risk_band] + '14' }}><div className="big-num text-5xl" style={{ color: BAND_COLOR[p.risk_band] }}>{p.risk_percent}%</div><div className="mono text-xs muted mt-2">{t('adm.threshold')} {(p.operating_threshold * 100).toFixed(1)}% · {t('intake.base')} {Math.round((p.shap_base_probability || 0) * 100)}%</div></div>
-              <div className="mt-3"><div className="eyebrow mb-1">{t('adm.factors')}</div><div className="grid gap-1">{p.top_factors.map((f) => <div key={f.feature} className="flex items-center gap-2 text-xs"><span className="truncate flex-1">{f.label}</span><span className="mono muted">{fmtVal(f.value)}</span><span className="mono font-semibold" style={{ color: f.direction === 'raises' ? '#C62828' : '#15803D' }}>{f.contribution > 0 ? '+' : ''}{f.contribution.toFixed(2)}</span></div>)}</div></div>
+              <div className="mt-3"><div className="eyebrow mb-1">{t('adm.factors')}</div><div className="grid gap-1">{p.top_factors.map((f) => <div key={f.feature} className="flex items-center gap-2 text-xs"><span className="truncate flex-1">{featName(t, f.feature, f.label)}</span><span className="mono muted">{fmtVal(f.value)}</span><span className="mono font-semibold" style={{ color: f.direction === 'raises' ? '#C62828' : '#15803D' }}>{f.contribution > 0 ? '+' : ''}{f.contribution.toFixed(2)}</span></div>)}</div></div>
               {missing.size > 0 && <p className="muted text-[11px] mt-3">{missing.size} {t('intake.missingNote')}</p>}
-              {(p.caveats || []).map((c) => <p key={c} className="muted text-[11px] mt-2">{c}</p>)}
+              {(p.caveats || []).map((c) => <p key={c} className="muted text-[11px] mt-2">{tx(c)}</p>)}
             </Card>
-            <Card title={t('intake.actions')} sub={t('intake.actionsSub')}><ol className="grid gap-1.5 text-sm list-decimal pl-5">{p.review_actions.map((a) => <li key={a}>{a}</li>)}</ol><p className="muted text-[11px] mt-3">{p.disclaimer}</p></Card>
+            <Card title={t('intake.actions')} sub={t('intake.actionsSub')}><ol className="grid gap-1.5 text-sm list-decimal pl-5">{p.review_actions.map((a) => <li key={a}>{tx(a)}</li>)}</ol><p className="muted text-[11px] mt-3">{tx(p.disclaimer)}</p></Card>
           </div>
         </div>
       )}
 
       <AdmissionRiskCard patientId={null} />
-      {bundle && <Appointments patientRef={pat.patient_id} patientLabel={pat.full_name} clinician={user.full_name} />}
+      {bundle && <Appointments patientRef={pat.patient_id} patientLabel={tx(pat.full_name)} clinician={user.full_name} />}
     </div>
   );
 }

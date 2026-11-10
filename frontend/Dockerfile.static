@@ -1,0 +1,7 @@
+FROM nginx:1.27-alpine
+# Prebuilt static bundle (npm run build on the developer machine): no Node.js or node_modules on a small-quota server.
+COPY dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+# files may arrive with owner-only permissions (archive from Windows, project folder chmod 700): nginx must be able to read them
+RUN chmod -R a+rX /usr/share/nginx/html && chmod a+r /etc/nginx/conf.d/default.conf
+EXPOSE 80

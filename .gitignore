@@ -15,3 +15,13 @@ data/processed/
 data/models/
 backend/.venv/
 .pytest_cache/
+
+# Generated PDF layout previews
+backend/output/
+
+backend/ml/hc18/*.pt
+
+# real de-identified example documents: kept locally and on the server, never in the public repository
+backend/data/examples/biochem_kdl_2026-07-25.*
+backend/data/examples/pelvic_us_2025-03-25.*
+backend/data/examples/cardioai_conclusion_example.docx

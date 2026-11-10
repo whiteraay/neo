@@ -3,6 +3,7 @@ import { LogoMark } from './Logo.jsx';
 import { Stethoscope, BarChart3, HeartHandshake, Building2, Check, Lock, ArrowRight, X } from 'lucide-react';
 import { api } from '../services/api.js';
 import { useT } from '../lib/i18n.jsx';
+import { hospitalName, centreName } from '../lib/official.js';
 
 export const ROLES = [
   { id: 'neonatologist', Icon: Stethoscope, color: '#0E9F9B', email: 'neonatologist@neooutcome.kz', name: 'Dr. Aigerim Nurlanova' },
@@ -13,7 +14,7 @@ export const ROLES = [
 
 /** Multi-role onboarding modal. Each role maps to a seeded demo account and its own portal. */
 export default function AuthModal({ onEnter, onClose, preset }) {
-  const { t } = useT();
+  const { t, tx, lang } = useT();
   const [hospitals, setHospitals] = useState([]);
   const [role, setRole] = useState(preset || 'neonatologist');
   const [hospital, setHospital] = useState('astana-nrc');
@@ -51,11 +52,11 @@ export default function AuthModal({ onEnter, onClose, preset }) {
           <div><label className="eyebrow block mb-1" htmlFor="password">{t('auth.password')}</label><input id="password" type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></div>
         </div>
         <label className="eyebrow block mt-4 mb-1" htmlFor="hospital">{t('auth.hospital')}</label>
-        <select id="hospital" value={hospital} onChange={(e) => setHospital(e.target.value)}>{hospitals.map((x) => <option key={x.id} value={x.id}>{x.name} — {x.city}</option>)}</select>
-        {h && <div className="muted text-xs mt-1">{h.name_kz} · HIS {h.his_vendor} · Level {h.care_level}</div>}
+        <select id="hospital" value={hospital} onChange={(e) => setHospital(e.target.value)}>{hospitals.map((x) => <option key={x.id} value={x.id}>{hospitalName(x, lang, tx)} — {centreName(x.city, lang)}</option>)}</select>
+        {h && <div className="muted text-xs mt-1">{lang !== 'kz' && <>{h.name_kz} · </>}{t('auth.his')} {h.his_vendor} · {t('an.level')} {h.care_level}</div>}
         {error && <div className="mt-3 text-sm font-semibold text-coral">{error}</div>}
         <button type="submit" className="btn btn-primary w-full justify-center mt-5 text-base py-3" disabled={!ready || busy}><Lock size={16} /> {busy ? '…' : t('auth.enter')} <ArrowRight size={16} /></button>
-        <p className="muted text-xs mt-3">Demo accounts are seeded by the backend (password <span className="mono">Pilot2026!</span>). No real patient data is loaded.</p>
+        <p className="muted text-xs mt-3">{t('auth.demo').split('{pw}')[0]}<span className="mono">Pilot2026!</span>{t('auth.demo').split('{pw}')[1]}</p>
       </form>
     </div>
   );
