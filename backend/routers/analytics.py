@@ -67,10 +67,10 @@ SOURCES = [
 ]
 ESTIMATED_FIELDS = ["nicu_beds", "utilisation", "specialists_per_10k", "live_births", "level"]
 MILESTONES = [
-    {"id": "data", "title": "Kazakhstan Dataset", "items": [["Data sharing agreement signed (3 sites)", True], ["Retrospective extract de-identified", True], ["31-feature schema mapped", False], ["Recalibration on KZ cohort complete", False]]},
-    {"id": "spec", "title": "Specialist Verification", "items": [["Clinical advisory board formed", True], ["50 predictions reviewed by neonatologists", False], ["Agreement ≥ 85% on risk tier", False], ["Human-in-the-loop sign-off audited (Law 230-VIII)", False]]},
-    {"id": "pilot", "title": "Pilot Hospital Access", "items": [["Ethics committee approval", True], ["Pilot site MoU (Astana NRC)", True], ["Role-based access configured", True], ["Shadow-mode go-live date set", False]]},
-    {"id": "his", "title": "HIS API Integration", "items": [["Damumed HL7 gateway credentials", True], ["KazHealth FHIR R4 sandbox tested", False], ["On-premise deployment hardened", False]]},
+    {"id": "data", "title": "Kazakhstan Dataset", "items": [["Data sharing agreement signed (3 sites)", False], ["Retrospective extract de-identified (Asfendiyarov, 1 105 admissions)", True], ["31-feature schema mapped", False], ["Recalibration on KZ cohort complete", False]]},
+    {"id": "spec", "title": "Specialist Verification", "items": [["Clinical advisory board formed", False], ["50 predictions reviewed by neonatologists", False], ["Agreement ≥ 85% on risk tier", False], ["Human-in-the-loop sign-off audited (Law 230-VIII)", False]]},
+    {"id": "pilot", "title": "Pilot Hospital Access", "items": [["Ethics committee approval", False], ["Pilot site MoU", False], ["Role-based access configured", True], ["Shadow-mode go-live date set", False]]},
+    {"id": "his", "title": "HIS API Integration", "items": [["Damumed HL7 gateway credentials", False], ["KazHealth FHIR R4 sandbox tested", False], ["On-premise deployment hardened", False]]},
     {"id": "open", "title": "Regional Open Data", "items": [["БНС series ingested", True], ["UNICEF MICS indicators mapped", True], ["Regional IMR forecast model trained & backtested", True], ["Regional benchmarks published", False]]},
 ]
 
@@ -80,12 +80,12 @@ async def regions():  # public: open/official data only, used by the landing pag
     enriched = [{**r, "estimate": True, "official": official_data.regional_overlay(r["id"])} for r in REGIONS]
     return {"regions": enriched, "estimated_fields": ESTIMATED_FIELDS, "ashyq_national": {**official_data.ashyq()["national"], "year": 2025}, "datasets": official_data.DATASETS, "transfer_routes": TRANSFER_ROUTES, "outline": OUTLINE, "national_trend": NATIONAL_TREND, "national": NATIONAL_NMR,
             "national_nmr": NATIONAL_NMR["value"], "sources": SOURCES,
-            "note": "Regional NMR: MICS 2024 brief (official; blank where the source suppresses small samples). AshyqData 2025 regional infant/neonatal mortality, beds and nursing staff + MICS microdata and WorldPop pregnancies are attached under `official`. National trend: UN IGME / WHO. NICU beds, utilisation, specialists and births are programme estimates until Минздрав data is loaded."}
+            "note": "Regional NMR: MICS 2024 brief (official; blank where the source suppresses small samples). БНС РК 2025 regional infant/neonatal mortality, beds and nursing staff + MICS microdata and WorldPop pregnancies are attached under `official`. National trend: UN IGME / WHO. NICU beds, utilisation, specialists and births are programme estimates until Минздрав data is loaded."}
 
 
 @router.get("/regions/trends")
 async def region_trends():
-    """AshyqData 2020–2025 infant & neonatal mortality trends per region (initial NeoOutcome dataset)."""
+    """2020–2025 infant & neonatal mortality trends per region (initial NeoOutcome dataset)."""
     a = official_data.ashyq()
     return {"source_id": "ashyq", "years": list(range(2020, 2026)), "national": a["national"], "trends": a["trends"], "regions": a["regions"]}
 
@@ -179,10 +179,10 @@ async def model_quality(db: AsyncSession = Depends(get_db), user: User = Depends
     flagged = sum(1 for r in latest.values() if r.status == "flagged")
     tiers = {t: sum(1 for p in preds if p.risk_tier == t) for t in ("low", "moderate", "high", "critical")}
     bins = []
-    for lo in range(0, 100, 20):
-        in_bin = [p for p in preds if lo <= p.risk_probability * 100 < lo + 20]
+    for lo, hi, label in ((0, 5, "<5%"), (5, 10, "5–10%"), (10, 20, "10–20%"), (20, 101, "≥20%")):  # the risk tiers
+        in_bin = [p for p in preds if lo <= p.risk_probability * 100 < hi]
         rev = [latest[p.id] for p in in_bin if p.id in latest]
-        bins.append({"bin": f"{lo}–{lo + 20}%", "n": len(in_bin), "reviewed": len(rev), "agreement": round(sum(1 for r in rev if r.status == "approved") / len(rev), 3) if rev else None})
+        bins.append({"bin": label, "n": len(in_bin), "reviewed": len(rev), "agreement": round(sum(1 for r in rev if r.status == "approved") / len(rev), 3) if rev else None})
     recent = [p for p in preds if p.created_at and p.created_at > datetime.now(timezone.utc) - timedelta(days=7)]
     return {"model_version": risk_engine.version, "training_metrics": risk_engine.metrics, "calibrated": risk_engine.calibrator is not None,
             "predictions_total": len(preds), "predictions_7d": len(recent), "reviewed": len(latest), "approved": approved, "flagged": flagged,

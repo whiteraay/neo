@@ -141,7 +141,9 @@ class RetrainingEngine:
             frames.append(encode(fb)); labels.append(np.array(fb_y)); sources.append(f"clinician_feedback (n={len(fb_y)})")
         X = pd.concat(frames, ignore_index=True)[ALL_FEATURES]
         y = np.concatenate(labels)
-        return X, y, sources
+        base = RiskEngine.baseline_groups()
+        groups = None if base is None else np.concatenate([base, -1 - np.arange(len(y) - len(base))])  # uploaded and feedback rows are their own groups
+        return X, y, sources, groups
 
     async def _reviewed_predictions(self, Session):
         async with Session() as db:
@@ -162,7 +164,7 @@ class RetrainingEngine:
             minor, patch = minor + 1, 0
         else:
             patch += 1
-        return f"v{major}.{minor}.{patch}-kz-local"
+        return f"v{major}.{minor}.{patch}-local"
 
     # ---------------- worker ----------------
     def _log(self, msg: str) -> None:
@@ -178,7 +180,7 @@ class RetrainingEngine:
             existing = _run_in_private_loop(self._existing_versions)
             version = self._next_version(existing, trigger)
             self.state.version = version
-            X, y, sources = self._gather()
+            X, y, sources, groups = self._gather()
             self.state.rows, self.state.sources = int(len(y)), sources
             self._log(f"{version} · {len(y)} rows from {len(sources)} sources")
             self._progress(4, "validating schema")
@@ -186,7 +188,7 @@ class RetrainingEngine:
             if missing:
                 raise ValueError(f"schema validation failed, missing: {missing}")
             out = VERSIONS_DIR / version
-            meta = run_training(X, y, out, version, " + ".join(sources), progress=self._progress, log=self._log)
+            meta = run_training(X, y, out, version, " + ".join(sources), groups=groups, progress=self._progress, log=self._log)
             self.state.metrics = meta["metrics"]
             # evaluate vs active
             active_auroc = float(risk_engine.metrics.get("auroc") or 0)

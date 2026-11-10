@@ -33,18 +33,25 @@ const TOPIC = {
 };
 export const TOPICS = Object.entries(TOPIC);
 
+/* Source line per language: WHO is ВОЗ in Russian and ДДСҰ in Kazakh. */
+const src = (ru) => ({
+  ru,
+  en: ru.replace('ВОЗ', 'WHO').replace('ЮНИСЕФ', 'UNICEF').replace('информационный бюллетень', 'fact sheet'),
+  kz: ru.replace('ВОЗ', 'ДДСҰ').replace('информационный бюллетень', 'ақпараттық бюллетень'),
+});
+
 export const PARENT_MATERIALS = [
-  { topic: 'preterm', lang: 'RU', title: 'Преждевременные роды', source: 'ВОЗ · информационный бюллетень', url: 'https://www.who.int/ru/news-room/fact-sheets/detail/preterm-birth',
+  { topic: 'preterm', lang: 'RU', title: 'Преждевременные роды', source: src('ВОЗ · информационный бюллетень'), url: 'https://www.who.int/ru/news-room/fact-sheets/detail/preterm-birth',
     summary: { ru: 'Что такое преждевременные роды и какой уход помогает таким малышам: тепло, кормление, контакт кожа к коже.', kz: 'Шала туу дегеніміз не және мұндай сәбилерге қандай күтім көмектеседі: жылу, тамақтандыру, тері мен терінің жанасуы.', en: 'What preterm birth is and which care helps these babies: warmth, feeding, skin-to-skin contact.' } },
-  { topic: 'feeding', lang: 'RU', title: 'Кормление детей грудного и раннего возраста', source: 'ВОЗ · информационный бюллетень', url: 'https://www.who.int/ru/news-room/fact-sheets/detail/infant-and-young-child-feeding',
-    summary: { ru: 'Почему грудное молоко так важно и что рекомендует ВОЗ в первые месяцы жизни.', kz: 'Ана сүті неге маңызды және ВОЗ алғашқы айларда не ұсынады.', en: 'Why breast milk matters and what WHO recommends in the first months of life.' } },
-  { topic: 'feeding', lang: 'RU', title: 'Грудное вскармливание: информационный бюллетень (Европейский регион)', source: 'ВОЗ / ЮНИСЕФ · 2024', url: 'https://www.who.int/europe/ru/publications/i/item/WHO-EURO-2024-10632-50404-76100',
-    summary: { ru: 'Краткая сводка ВОЗ и ЮНИСЕФ о грудном вскармливании и поддержке мам в странах региона.', kz: 'ВОЗ пен ЮНИСЕФ-тің емізу және өңір елдеріндегі аналарды қолдау туралы қысқа шолуы.', en: 'A short WHO/UNICEF summary on breastfeeding and how mothers are supported across the region.' } },
-  { topic: 'kangaroo', lang: 'EN', title: 'Kangaroo mother care: a transformative innovation in health care', source: 'ВОЗ · 2023', url: 'https://www.who.int/publications/i/item/9789240072657',
-    summary: { ru: 'Метод «кенгуру»: малыш лежит на груди мамы кожа к коже. ВОЗ объясняет, чем это помогает недоношенным.', kz: '«Кенгуру» әдісі: сәби анасының кеудесінде тері мен теріге жатады. ВОЗ мұның шала туған балаларға пайдасын түсіндіреді.', en: 'Skin-to-skin “kangaroo” care and why it helps preterm babies, explained by WHO.' } },
-  { topic: 'preterm', lang: 'EN', title: 'WHO recommendations for care of the preterm or low-birth-weight infant', source: 'ВОЗ · 2022', url: 'https://www.who.int/publications/i/item/9789240058262',
-    summary: { ru: 'Рекомендации ВОЗ по уходу за недоношенными и маловесными детьми, в том числе об участии семьи.', kz: 'Шала туған және салмағы аз балаларды күту бойынша ВОЗ ұсыныстары, отбасының қатысуын қоса алғанда.', en: 'WHO guidance on caring for preterm and low-birth-weight babies, including family involvement.' } },
-  { topic: 'postnatal', lang: 'EN', title: 'WHO recommendations on maternal and newborn care for a positive postnatal experience', source: 'ВОЗ · 2022', url: 'https://www.who.int/publications/i/item/9789240045989',
+  { topic: 'feeding', lang: 'RU', title: 'Кормление детей грудного и раннего возраста', source: src('ВОЗ · информационный бюллетень'), url: 'https://www.who.int/ru/news-room/fact-sheets/detail/infant-and-young-child-feeding',
+    summary: { ru: 'Почему грудное молоко так важно и что рекомендует ВОЗ в первые месяцы жизни.', kz: 'Ана сүті неге маңызды және ДДСҰ алғашқы айларда не ұсынады.', en: 'Why breast milk matters and what WHO recommends in the first months of life.' } },
+  { topic: 'feeding', lang: 'RU', title: 'Грудное вскармливание: информационный бюллетень (Европейский регион)', source: src('ВОЗ / ЮНИСЕФ · 2024'), url: 'https://www.who.int/europe/ru/publications/i/item/WHO-EURO-2024-10632-50404-76100',
+    summary: { ru: 'Краткая сводка ВОЗ и ЮНИСЕФ о грудном вскармливании и поддержке мам в странах региона.', kz: 'ДДСҰ мен ЮНИСЕФ-тің емізу және өңір елдеріндегі аналарды қолдау туралы қысқа шолуы.', en: 'A short WHO/UNICEF summary on breastfeeding and how mothers are supported across the region.' } },
+  { topic: 'kangaroo', lang: 'EN', title: 'Kangaroo mother care: a transformative innovation in health care', source: src('ВОЗ · 2023'), url: 'https://www.who.int/publications/i/item/9789240072657',
+    summary: { ru: 'Метод «кенгуру»: малыш лежит на груди мамы кожа к коже. ВОЗ объясняет, чем это помогает недоношенным.', kz: '«Кенгуру» әдісі: сәби анасының кеудесінде тері мен теріге жатады. ДДСҰ мұның шала туған балаларға пайдасын түсіндіреді.', en: 'Skin-to-skin “kangaroo” care and why it helps preterm babies, explained by WHO.' } },
+  { topic: 'preterm', lang: 'EN', title: 'WHO recommendations for care of the preterm or low-birth-weight infant', source: src('ВОЗ · 2022'), url: 'https://www.who.int/publications/i/item/9789240058262',
+    summary: { ru: 'Рекомендации ВОЗ по уходу за недоношенными и маловесными детьми, в том числе об участии семьи.', kz: 'Шала туған және салмағы аз балаларды күту бойынша ДДСҰ ұсыныстары, отбасының қатысуын қоса алғанда.', en: 'WHO guidance on caring for preterm and low-birth-weight babies, including family involvement.' } },
+  { topic: 'postnatal', lang: 'EN', title: 'WHO recommendations on maternal and newborn care for a positive postnatal experience', source: src('ВОЗ · 2022'), url: 'https://www.who.int/publications/i/item/9789240045989',
     summary: { ru: 'Как заботиться о себе и малыше после родов: осмотры, тревожные признаки, самочувствие мамы.', kz: 'Босанғаннан кейін өзіңізге және сәбиге қалай қамқорлық жасау: тексерулер, қауіпті белгілер, ананың жағдайы.', en: 'Caring for yourself and your baby after birth: check-ups, danger signs, your wellbeing.' } },
 ];
 

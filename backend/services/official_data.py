@@ -2,7 +2,7 @@
 
 All files live in ``backend/data/official``. Nothing here is patient-level.
 
-* ``ashyq_regional_2025.json``  – AshyqData 2025 regional infant & neonatal mortality, hospital beds,
+* ``ashyq_regional_2025.json``  – 2025 regional infant & neonatal mortality, hospital beds,
                                    nursing staff + 2020–2025 trends (initial NeoOutcome repository).
 * ``mics_bh_nmr.json``          – MICS Kazakhstan 2024 *microdata* (bh.sav birth history): weighted neonatal
                                    and infant mortality for births in the 60 months before interview, by region.
@@ -34,9 +34,9 @@ OSM_TO_ID = {"214834": "atyrau", "215441": "west", "215683": "aktobe", "215686":
              "14243026": "abai", "14312169": "jetisu", "14312737": "ulytau"}
 
 DATASETS = [
-    {"id": "ashyq", "name": "AshyqData 2025 · Минздрав РК", "kind": "official", "year": 2025,
-     "detail": "Infant & neonatal mortality, hospital beds and nursing staff by region; 2020–2025 trends",
-     "url": "https://data.egov.kz", "license": "Open data of the Republic of Kazakhstan", "file": "ashyq_regional_2025.json"},
+    {"id": "ashyq", "name": "Регионы 2025 · из первой версии проекта", "kind": "estimate", "year": 2025,
+     "detail": "Infant mortality and beds match БНС; the regional neonatal mortality series has no confirmed primary source yet",
+     "url": "https://stat.gov.kz/en/open-data/", "license": "Source being verified", "file": "ashyq_regional_2025.json"},
     {"id": "mics_micro", "name": "MICS Kazakhstan 2024 · microdata (bh.sav)", "kind": "official", "year": 2024,
      "detail": "Birth-history recode: weighted NMR/IMR for births in the 60 months before interview; n per region is small",
      "url": "https://mics.unicef.org/surveys", "license": "UNICEF MICS data-use terms", "file": "mics_bh_nmr.json"},

@@ -1,0 +1,221 @@
+[
+  {
+    "features": {
+      "age": 29,
+      "bp_arm_dex_upper": 118,
+      "bp_arm_dex_lower": 76
+    },
+    "prediction": {
+      "stage": 0,
+      "class_shares": [
+        {
+          "stage": 0,
+          "share": 0.6366666666666667
+        },
+        {
+          "stage": 1,
+          "share": 0.11833333333333333
+        },
+        {
+          "stage": 2,
+          "share": 0.1
+        },
+        {
+          "stage": 3,
+          "share": 0.145
+        }
+      ],
+      "numeric_supplied": 3,
+      "numeric_total": 40,
+      "imputed_features": [
+        "Unnamed: 0.1",
+        "Unnamed: 0",
+        "bp_max",
+        "height_cm",
+        "weight_kg",
+        "bmi",
+        "ppt",
+        "respiratory_rate",
+        "heart_rate",
+        "pulse",
+        "bp_arm_sin_upper",
+        "bp_arm_sin_lower",
+        "bp_leg_dex_upper",
+        "bp_leg_dex_lower",
+        "bp_leg_sin_upper",
+        "bp_leg_sin_lower",
+        "lpi_dex",
+        "lpi_sin",
+        "echocg",
+        "lvef",
+        "lvdd",
+        "blood_biochem",
+        "total_protein",
+        "ldl",
+        "hdl",
+        "alt",
+        "ast",
+        "de_ritis_index",
+        "total_cholesterol",
+        "triglycerides",
+        "glucose",
+        "urea",
+        "creatinine",
+        "inr",
+        "pti",
+        "gfr_ckd_epi",
+        "creatinine_clearance_cg"
+      ],
+      "source": "https://github.com/AdeleKunuspekova/CardioAI/tree/d03b5d7be5386ed31ac90e92a06bce9814c18dd6/models/hypertensia",
+      "experimental": true,
+      "pregnancy_validated": false,
+      "class_zero_meaning": "No stage extracted from the original diagnosis text; not proof of normal blood pressure"
+    }
+  },
+  {
+    "features": {
+      "age": 29,
+      "bp_arm_dex_upper": 142,
+      "bp_arm_dex_lower": 92
+    },
+    "prediction": {
+      "stage": 0,
+      "class_shares": [
+        {
+          "stage": 0,
+          "share": 0.6316666666666667
+        },
+        {
+          "stage": 1,
+          "share": 0.12333333333333334
+        },
+        {
+          "stage": 2,
+          "share": 0.11
+        },
+        {
+          "stage": 3,
+          "share": 0.135
+        }
+      ],
+      "numeric_supplied": 3,
+      "numeric_total": 40,
+      "imputed_features": [
+        "Unnamed: 0.1",
+        "Unnamed: 0",
+        "bp_max",
+        "height_cm",
+        "weight_kg",
+        "bmi",
+        "ppt",
+        "respiratory_rate",
+        "heart_rate",
+        "pulse",
+        "bp_arm_sin_upper",
+        "bp_arm_sin_lower",
+        "bp_leg_dex_upper",
+        "bp_leg_dex_lower",
+        "bp_leg_sin_upper",
+        "bp_leg_sin_lower",
+        "lpi_dex",
+        "lpi_sin",
+        "echocg",
+        "lvef",
+        "lvdd",
+        "blood_biochem",
+        "total_protein",
+        "ldl",
+        "hdl",
+        "alt",
+        "ast",
+        "de_ritis_index",
+        "total_cholesterol",
+        "triglycerides",
+        "glucose",
+        "urea",
+        "creatinine",
+        "inr",
+        "pti",
+        "gfr_ckd_epi",
+        "creatinine_clearance_cg"
+      ],
+      "source": "https://github.com/AdeleKunuspekova/CardioAI/tree/d03b5d7be5386ed31ac90e92a06bce9814c18dd6/models/hypertensia",
+      "experimental": true,
+      "pregnancy_validated": false,
+      "class_zero_meaning": "No stage extracted from the original diagnosis text; not proof of normal blood pressure"
+    }
+  },
+  {
+    "features": {
+      "age": 29,
+      "bp_arm_dex_upper": 168,
+      "bp_arm_dex_lower": 112
+    },
+    "prediction": {
+      "stage": 0,
+      "class_shares": [
+        {
+          "stage": 0,
+          "share": 0.6166666666666667
+        },
+        {
+          "stage": 1,
+          "share": 0.11166666666666666
+        },
+        {
+          "stage": 2,
+          "share": 0.14666666666666667
+        },
+        {
+          "stage": 3,
+          "share": 0.125
+        }
+      ],
+      "numeric_supplied": 3,
+      "numeric_total": 40,
+      "imputed_features": [
+        "Unnamed: 0.1",
+        "Unnamed: 0",
+        "bp_max",
+        "height_cm",
+        "weight_kg",
+        "bmi",
+        "ppt",
+        "respiratory_rate",
+        "heart_rate",
+        "pulse",
+        "bp_arm_sin_upper",
+        "bp_arm_sin_lower",
+        "bp_leg_dex_upper",
+        "bp_leg_dex_lower",
+        "bp_leg_sin_upper",
+        "bp_leg_sin_lower",
+        "lpi_dex",
+        "lpi_sin",
+        "echocg",
+        "lvef",
+        "lvdd",
+        "blood_biochem",
+        "total_protein",
+        "ldl",
+        "hdl",
+        "alt",
+        "ast",
+        "de_ritis_index",
+        "total_cholesterol",
+        "triglycerides",
+        "glucose",
+        "urea",
+        "creatinine",
+        "inr",
+        "pti",
+        "gfr_ckd_epi",
+        "creatinine_clearance_cg"
+      ],
+      "source": "https://github.com/AdeleKunuspekova/CardioAI/tree/d03b5d7be5386ed31ac90e92a06bce9814c18dd6/models/hypertensia",
+      "experimental": true,
+      "pregnancy_validated": false,
+      "class_zero_meaning": "No stage extracted from the original diagnosis text; not proof of normal blood pressure"
+    }
+  }
+]

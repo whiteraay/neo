@@ -1,0 +1,31 @@
+{
+  "source": "https://github.com/AdeleKunuspekova/CardioAI",
+  "commit": "d03b5d7be5386ed31ac90e92a06bce9814c18dd6",
+  "license": "No license file found in source repository; local evaluation only; obtain permission before redistribution.",
+  "model": "StandardScaler + PCA + FeatureHasher + RandomForestClassifier (600 trees)",
+  "target": "Stage 1/2/3 extracted by regex from preliminary_diagnosis; 0 means no stage extracted.",
+  "limitations": [
+    "No dataset or validation metrics supplied",
+    "No pregnancy-specific validation",
+    "Numeric schema includes two row-index fields (potential leakage)",
+    "Missing numeric features imputed with scaler means; categories use unknown"
+  ],
+  "sha256": {
+    "hasher.joblib": "43cbee442d0f2c7620dd2c9f0bfc8877beb3179656be9f379e9470e57f58147f",
+    "pca.joblib": "7d46bc3317621d5674bec15a2a46ca0108678556ff3778fb5cc33957ec5d11f0",
+    "rf.joblib": "02649a5c4cd7c40769c2b540e203f16c50add0c2a6f771d182e8754c2a44096a",
+    "scaler.joblib": "95c1a30da45176cf02f0a3b067b22aa136f38e5377e8f6290f704d30282cd118",
+    "model.npz": "d79078496567e58222b16ff64083fd45b096530858f5a4e1c2352355bd3b5574",
+    "phenotype.npz": "152206a5d93608efb6ec5aece2893c7508a46007e0fc4f24ad898c23e3c4590e"
+  },
+  "sklearn_export_version": "1.7.1",
+  "phenotype": {
+    "source": "https://github.com/AdeleKunuspekova/CardioAI/tree/d03b5d7be5386ed31ac90e92a06bce9814c18dd6/models/phenotype",
+    "model": "StandardScaler + PCA (15 components) + KMeans (3 clusters)",
+    "limitations": [
+      "Unsupervised clusters; all three source profiles carry the same label",
+      "Source profiles list the row-index column 'Unnamed: 0.1' among key features (possible leakage)",
+      "No pregnancy-specific validation"
+    ]
+  }
+}

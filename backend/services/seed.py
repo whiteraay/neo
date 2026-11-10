@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.clinical import BabyEntry, ClinicalTask, MaternalRecord
+from models.maternal_labs import LabObservation
 from models.patient import Patient
 from models.telemetry import VitalSign
 from models.user import Hospital, User, UserRole
@@ -36,8 +37,40 @@ PATIENTS = [
 ]
 
 
+# Demo mother's confirmed lab history (fictional): (week of pregnancy, code, value, unit, value_text, ref_low, ref_high)
+LAB_HISTORY = [
+    (10, "hb", 124, "g/L", None, 110, 150), (10, "plt", 245, "10^9/L", None, 150, 400), (10, "glucose", 4.6, "mmol/L", None, 3.3, 5.5),
+    (10, "urine_protein", None, "g/L", "negative", None, None), (10, "bp_sys", 112, "mmHg", None, None, None), (10, "bp_dia", 72, "mmHg", None, None, None), (10, "weight", 63.0, "kg", None, None, None),
+    (20, "hb", 113, "g/L", None, 110, 150), (20, "urine_protein", None, "g/L", "negative", None, None), (20, "bp_sys", 118, "mmHg", None, None, None), (20, "bp_dia", 76, "mmHg", None, None, None),
+    (20, "weight", 66.5, "kg", None, None, None),
+    (25, "ogtt_0", 5.3, "mmol/L", None, None, 5.1), (25, "ogtt_1h", 10.2, "mmol/L", None, None, 10.0), (25, "ogtt_2h", 8.1, "mmol/L", None, None, 8.5),
+    (28, "bp_sys", 128, "mmHg", None, None, None), (28, "bp_dia", 82, "mmHg", None, None, None),
+    (30, "hb", 101, "g/L", None, 110, 150), (30, "ferritin", 11, "µg/L", None, 10, 120), (30, "urine_protein", None, "g/L", "negative", None, None),
+    (30, "bp_sys", 142, "mmHg", None, None, None), (30, "bp_dia", 91, "mmHg", None, None, None), (30, "weight", 70.2, "kg", None, None, None),
+]
+
+
+async def seed_lab_history(db: AsyncSession) -> None:
+    """Idempotent: adds the demo mother's lab history once, also to databases seeded before this feature existed."""
+    mother = (await db.execute(select(User).where(User.email == "mother@neooutcome.kz"))).scalar_one_or_none()
+    if not mother or (await db.execute(select(LabObservation.id).where(LabObservation.user_id == mother.id).limit(1))).scalar_one_or_none():
+        return
+    rec = (await db.execute(select(MaternalRecord).where(MaternalRecord.user_id == mother.id).order_by(MaternalRecord.updated_at.desc()).limit(1))).scalar_one_or_none()
+    if not rec:
+        return
+    upd = (rec.updated_at or datetime.now(timezone.utc)).date()
+    for wk, code, value, unit, text, lo, hi in LAB_HISTORY:
+        ga = wk * 7
+        day = upd - timedelta(days=round(rec.gestational_age_wk * 7 - ga))
+        db.add(LabObservation(user_id=mother.id, document_id=None, code=code, original_name="", value=value, value_text=text, unit=unit, original_value=str(value if value is not None else text),
+                              original_unit=unit, ref_low=lo, ref_high=hi, reference_range=(f"{lo} - {hi}" if lo is not None and hi is not None else None), confidence=1.0,
+                              status="verified", specimen_date=day, gestational_age_days=ga, provenance={"source": "demo_seed", "fictional": True}))
+    await db.commit()
+
+
 async def seed(db: AsyncSession) -> None:
     if (await db.execute(select(Hospital).limit(1))).scalar_one_or_none():
+        await seed_lab_history(db)
         return
     db.add_all(HOSPITALS)
     for email, name, role, hosp in USERS:
@@ -80,4 +113,5 @@ async def seed(db: AsyncSession) -> None:
     for title, pid, prio, mins in [("Repeat blood gas", "KZ-2026-089", "high", 60), ("Echocardiogram for suspected PDA", "KZ-2026-089", "normal", 240), ("Review feeding plan with dietitian", "KZ-2026-117", "low", 480), ("Blood culture results due", "KZ-2026-121", "critical", 30)]:
         db.add(ClinicalTask(hospital_id="astana-nrc", patient_id=pid, title=title, priority=prio, created_by=doc.id, due_at=now + timedelta(minutes=mins)))
     await db.commit()
+    await seed_lab_history(db)
     print(f"[seed] demo data loaded · users: {', '.join(u[0] for u in USERS)} · password: {DEMO_PASSWORD}")

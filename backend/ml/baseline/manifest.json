@@ -6,7 +6,7 @@
   "origin": "synthetic",
   "origin_label": "PICDB-shaped synthetic baseline (804 admissions)",
   "description": "Generated with services.ml_engine.RiskEngine.synthetic_cohort(seed=2026) using effect sizes shaped like the Paediatric Intensive Care database (PIC v1.1.0, Zhejiang University Children's Hospital). It stands in for the credentialed PIC extract and must be replaced before clinical validation.",
-  "replace_with": "python -m ml.build_pic_cohort --pic-dir /path/to/PIC/ --out ml/baseline/picdb_baseline_804.csv",
+  "replace_with": "python ml/build_pic_cohort.py --pic-dir /path/to/PIC/V1.1.0 --out /outside/the/repo/pic_neonatal_cohort.csv",
   "features": 31,
   "label": "deteriorated_24h"
 }

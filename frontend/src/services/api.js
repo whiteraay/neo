@@ -5,6 +5,7 @@
 import * as mock from '../lib/mock.js';
 import * as im from '../lib/intakeMock.js';
 import { offlineOverlay } from '../lib/official.js';
+import { labsStore } from '../lib/labsMock.js';
 
 const BASE = import.meta.env.VITE_API_URL || '';
 const TOKEN_KEY = 'neo.token';
@@ -21,6 +22,7 @@ async function request(path, { method = 'GET', body, form } = {}) {
     try { detail = (await res.json()).detail || detail; } catch { /* ignore */ }
     const err = new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
     err.status = res.status;
+    err.detail = detail; // structured detail, e.g. { code: 'duplicate', document_id } on a 409
     throw err;
   }
   return res.status === 204 ? null : res.json();
@@ -114,6 +116,12 @@ export const api = {
   async admissionInfo() { return (await probe()) ? request('/api/predictions/admission/info') : im.ADMISSION_INFO; },
   async predictAdmission(features, patientId = null, persist = false) { return (await probe()) ? request('/api/predictions/admission', { method: 'POST', body: { features, patient_id: patientId, persist } }) : im.mockAdmission(features); },
   async intakeDemo() { return (await probe()) ? request('/api/intake/demo') : im.mockScoreBundle(im.SYNTHETIC_BUNDLE); },
+  async intakePatientBundle(id) { return request(`/api/documents/patients/${encodeURIComponent(id)}/bundle`); },
+  async documents() { if (!(await probe())) throw new Error('Для документов нужен сервер / Backend required'); return request('/api/documents'); },
+  async queueDocument(body) { return request('/api/documents/generated', { method: 'POST', body }); },
+  async uploadDocument({ file, patient_id, encounter_ref, document_at }) { const form = new FormData(); form.append('file', file); form.append('patient_id', patient_id); form.append('encounter_ref', encounter_ref); form.append('document_at', document_at); return request('/api/documents/upload', { method: 'POST', form }); },
+  async signDocument(id, note) { return request(`/api/documents/${id}/sign`, { method: 'POST', body: { note } }); },
+  async documentUrl(id) { const res = await fetch(`${BASE}/api/documents/${id}/pdf`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }); if (!res.ok) throw new Error('Не удалось открыть PDF / Cannot open PDF'); return URL.createObjectURL(await res.blob()); },
   async intakeImport(file) {
     if (!(await probe())) return im.mockScoreBundle(im.parseBundleFile(file.name, await file.text()));
     const form = new FormData(); form.append('file', file);
@@ -152,5 +160,85 @@ export const api = {
     const c = { id: `local-${Date.now()}`, ...body, created_at: new Date().toISOString(), urgent: body.flags.length > 0 };
     offlineCheckins.unshift(c); return c;
   },
+
+  // Portal 3 · lab history (docs/maternal_labs.md). Offline: in-memory store in lib/labsMock.js
+  async labCatalog() { return (await probe()) ? request('/api/maternal/labs/catalog') : labsStore.catalog(); },
+  async labDocuments() { return (await probe()) ? request('/api/maternal/labs/documents') : labsStore.documents(); },
+  async uploadLab(file) {
+    if (!(await probe())) return labsStore.upload(file);
+    const form = new FormData(); form.append('file', file);
+    return request('/api/maternal/labs/documents', { method: 'POST', form });
+  },
+  async labAIStatus() { return (await probe()) ? request('/api/maternal/labs/ai/status') : { configured: false, model: null }; },
+  async labAI(id, body) { return request(`/api/maternal/labs/documents/${id}/ai`, { method: 'POST', body }); },
+  async labText(id, text) { return (await probe()) ? request(`/api/maternal/labs/documents/${id}/text`, { method: 'POST', body: { text, method: 'client_ocr' } }) : labsStore.text(id, text); },
+  async labDemo(kind = 'cbc') { return (await probe()) ? request('/api/maternal/labs/demo', { method: 'POST', body: { kind } }) : labsStore.demo(); },
+  /** Object URL of the original file (caller revokes it). */
+  async labFileUrl(id) {
+    if (!(await probe())) return labsStore.fileUrl(id);
+    const headers = {}; if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${BASE}/api/maternal/labs/documents/${id}/file`, { headers });
+    if (!res.ok) { const err = new Error(res.statusText); err.status = res.status; throw err; }
+    return URL.createObjectURL(await res.blob());
+  },
+  // She confirms the reading as it is, or reports a mismatch; values are never typed or edited by her.
+  async confirmLab(id) { return (await probe()) ? request(`/api/maternal/labs/documents/${id}/confirm`, { method: 'POST' }) : labsStore.confirm(id); },
+  async reportLab(id, comment) { return (await probe()) ? request(`/api/maternal/labs/documents/${id}/report`, { method: 'POST', body: { comment } }) : labsStore.report(id, comment); },
+  // Doctor side: a mother cannot delete or change a document; her doctor can, with a reason (audited).
+  // Support after birth (routers/family.py). Server only: answers and diary are personal data kept on the server.
+  async epds() { return (await probe()) ? request('/api/maternal/epds') : []; },
+  async addEpds(body) { if (!(await probe())) throw new Error('Нужен сервер / Requires the backend'); return request('/api/maternal/epds', { method: 'POST', body }); },
+  async care(days = 7) { return (await probe()) ? request(`/api/maternal/care?days=${days}`) : { baby: {}, entries: [], days: [], hints: [] }; },
+  async addCare(body) { if (!(await probe())) throw new Error('Нужен сервер / Requires the backend'); return request('/api/maternal/care', { method: 'POST', body }); },
+  async deleteCare(id) { return request(`/api/maternal/care/${id}`, { method: 'DELETE' }); },
+  async today() { return (await probe()) ? request('/api/maternal/today') : { baby: {}, tips: ['feed_cues', 'skin_to_skin', 'rest'] }; },
+  async myQuestions() { return (await probe()) ? request('/api/maternal/questions') : []; },
+  async ask(body) { if (!(await probe())) throw new Error('Нужен сервер / Requires the backend'); return request('/api/maternal/questions', { method: 'POST', body }); },
+  async staffQuestions() { return request('/api/maternal/staff/questions'); },
+  async answerQuestion(id, answer) { return request(`/api/maternal/staff/questions/${id}/answer`, { method: 'POST', body: { answer } }); },
+  async staffEpds() { return request('/api/maternal/staff/epds'); },
+  async staffEpdsSeen(id) { return request(`/api/maternal/staff/epds/${id}/seen`, { method: 'POST' }); },
+  async staffMothers() { return request('/api/maternal/labs/staff/mothers'); },
+  async staffMotherDocs(id) { return request(`/api/maternal/labs/staff/mothers/${id}/documents`); },
+  async staffCorrect(id, body) { return request(`/api/maternal/labs/staff/documents/${id}`, { method: 'PUT', body }); },
+  async staffDelete(id, reason) { return request(`/api/maternal/labs/staff/documents/${id}`, { method: 'DELETE', body: { reason } }); },
+  async staffFileUrl(id) {
+    const headers = {}; if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${BASE}/api/maternal/labs/staff/documents/${id}/file`, { headers });
+    if (!res.ok) { const err = new Error(res.statusText); err.status = res.status; throw err; }
+    return URL.createObjectURL(await res.blob());
+  },
+  async addObservation(body) { return (await probe()) ? request('/api/maternal/labs/observations', { method: 'POST', body }) : labsStore.addObservation(body); },
+  async deleteObservation(id) { return (await probe()) ? request(`/api/maternal/labs/observations/${id}`, { method: 'DELETE' }) : labsStore.removeObservation(id); },
+  async labTimeline() { return (await probe()) ? request('/api/maternal/labs/timeline') : labsStore.timeline(); },
+  async hypertension(arm) { if (!(await probe())) throw new Error('CardioAI requires the backend / Для CardioAI нужен сервер'); return request(`/api/maternal/labs/hypertension?arm=${encodeURIComponent(arm)}`); },
+  async labDemoHistory(end_date) { return (await probe()) ? request('/api/maternal/labs/demo/history', { method: 'POST', body: { end_date } }) : labsStore.demoHistory(end_date); },
+  // De-identified real example documents (backend/data/examples). Server only: the files live there.
+  async labExamples() { return (await probe()) ? request('/api/maternal/labs/examples') : []; },
+  async addAllLabExamples() { if (!(await probe())) throw new Error('Примеры доступны только с сервером / Examples require the backend'); return request('/api/maternal/labs/examples', { method: 'POST' }); },
+  async addLabExample(key) { if (!(await probe())) throw new Error('Примеры доступны только с сервером / Examples require the backend'); return request(`/api/maternal/labs/examples/${encodeURIComponent(key)}`, { method: 'POST' }); },
+  // CardioAI on a cardiology conclusion (.docx). The uploaded file is read in memory and not stored.
+  // variant: original (de-identified 1.docx) | normal | ag1 | ag2 | ag3 (generated in the same template); seed picks the data
+  async cardioExample(variant = 'original', seed) { if (!(await probe())) throw new Error('CardioAI requires the backend / Для CardioAI нужен сервер'); return request(`/api/maternal/labs/cardioai/example?variant=${variant}${seed != null ? `&seed=${seed}` : ''}`); },
+  async cardioConclusion(file) {
+    if (!(await probe())) throw new Error('CardioAI requires the backend / Для CardioAI нужен сервер');
+    const form = new FormData(); form.append('file', file);
+    return request('/api/maternal/labs/cardioai/conclusion', { method: 'POST', form });
+  },
+  async cardioExampleFile(variant = 'original', seed = 1) {
+    const headers = {}; if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(`${BASE}/api/maternal/labs/cardioai/example.docx?variant=${variant}&seed=${seed}`, { headers });
+    if (!res.ok) { const err = new Error(res.statusText); err.status = res.status; throw err; }
+    return URL.createObjectURL(await res.blob());
+  },
+  // Fetal head circumference (HC18 U-Net). Images are processed in memory and not stored.
+  async hcInfo() { return (await probe()) ? request('/api/maternal/labs/hc/info') : { ready: false }; },
+  async hcSamples() { return (await probe()) ? request('/api/maternal/labs/hc/samples') : []; },
+  async hcMeasure({ file, sample, pixelSize }) {
+    if (!(await probe())) throw new Error('Нужен сервер / Requires the backend');
+    const form = new FormData(); if (file) form.append('file', file); if (sample) form.append('sample', sample); if (pixelSize) form.append('pixel_size_mm', String(pixelSize));
+    return request('/api/maternal/labs/hc/measure', { method: 'POST', form });
+  },
+  async removeLabDemoHistory() { return (await probe()) ? request('/api/maternal/labs/demo/history', { method: 'DELETE' }) : labsStore.removeDemoHistory(); },
 };
 const offlineCheckins = [];

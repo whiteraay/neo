@@ -21,6 +21,8 @@ services:
       NEO_DATABASE_URL: postgresql+asyncpg://neo:neo@db:5432/neooutcome
       NEO_JWT_SECRET: ${NEO_JWT_SECRET:-dev-only-secret-change-me}
       NEO_ENVIRONMENT: ${NEO_ENVIRONMENT:-development}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
       NEO_SEED_DEMO_DATA: "true"
       NEO_CORS_ORIGINS: '["http://localhost","http://localhost:5173","http://localhost:3000"]'
     volumes:

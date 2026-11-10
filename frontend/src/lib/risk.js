@@ -29,10 +29,13 @@ export function scoreRisk(p) {
   const sumSigned = cs.reduce((a, b) => a + b.c, 0) || 1e-6;
   const shap = cs.map((x) => ({ feature: x.key, label: x.label, value: x.value, shap: x.c, pp: (x.c / sumSigned) * delta })).sort((a, b) => Math.abs(b.pp) - Math.abs(a.pp));
   const pct = Math.round(prob * 100);
-  return { risk_probability: prob, risk_percent: pct, base_rate_percent: Math.round(base * 100), shap, risk_tier: tier(pct), recommendations: RECOMMENDATIONS[tier(pct)], model_version: 'client-surrogate' };
+  const level = surrogateTier(pct);
+  return { risk_probability: prob, risk_percent: pct, base_rate_percent: Math.round(base * 100), shap, risk_tier: level, recommendations: RECOMMENDATIONS[level], model_version: 'client-surrogate' };
 }
 
-export const tier = (pct) => (pct >= 75 ? 'critical' : pct >= 50 ? 'high' : pct >= 25 ? 'moderate' : 'low');
+/* the surrogate is not calibrated to real event rates, so it keeps its own wider scale */
+const surrogateTier = (pct) => (pct >= 75 ? 'critical' : pct >= 50 ? 'high' : pct >= 25 ? 'moderate' : 'low');
+export const tier = (pct) => (pct >= 20 ? 'critical' : pct >= 10 ? 'high' : pct >= 5 ? 'moderate' : 'low');
 export const TIER_LABEL = { low: 'Low', moderate: 'Moderate', high: 'High', critical: 'Critical' };
 export const TIER_COLOR = { low: '#16A34A', moderate: '#F59E0B', high: '#F97316', critical: '#E5484D' };
 export const RECOMMENDATIONS = {

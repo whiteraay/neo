@@ -6,6 +6,8 @@ and re-homed on the FastAPI/Postgres stack with JWT roles and audit logging.
 from datetime import datetime, timezone
 from uuid import UUID
 
+from urllib.parse import quote
+
 from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -87,7 +89,7 @@ async def card_from_bundle(body: BundleIn, user: User = Depends(get_current_user
     bundle = body.bundle if body.bundle.get("prediction") else score_bundle(body.bundle)
     pdf = render_patient_pdf(bundle)
     pid = bundle.get("patient", {}).get("patient_id", "patient")
-    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f'inline; filename="{pid}_patient_card.pdf"'})
+    return Response(pdf, media_type="application/pdf", headers={"Content-Disposition": f"inline; filename*=UTF-8''{quote(f'{pid}_patient_card.pdf')}"})
 
 
 @router.get("/patients/{patient_id}/card.pdf")

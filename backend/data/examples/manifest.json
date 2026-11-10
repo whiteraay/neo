@@ -1,0 +1,374 @@
+[
+ {
+  "key": "biochem_2026-05-27",
+  "group": "biochem",
+  "file": "series/biochem_2026-05-27.pdf",
+  "content_type": "application/pdf",
+  "text": "series/biochem_2026-05-27.txt",
+  "filename": "Биохимия_крови_27.05.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-05-27",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "biochem_2026-06-24",
+  "group": "biochem",
+  "file": "series/biochem_2026-06-24.pdf",
+  "content_type": "application/pdf",
+  "text": "series/biochem_2026-06-24.txt",
+  "filename": "Биохимия_крови_24.06.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-06-24",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "biochem_photo",
+  "group": "biochem",
+  "file": "biochem_kdl_2026-07-25.jpg",
+  "content_type": "image/jpeg",
+  "text": "biochem_kdl_2026-07-25.txt",
+  "filename": "Биохимия_крови_25.07.2026.jpg",
+  "laboratory": "KDL Олимп",
+  "date": "2026-07-25",
+  "synthetic": false,
+  "summary": null
+ },
+ {
+  "key": "biochem_2026-08-26",
+  "group": "biochem",
+  "file": "series/biochem_2026-08-26.pdf",
+  "content_type": "application/pdf",
+  "text": "series/biochem_2026-08-26.txt",
+  "filename": "Биохимия_крови_26.08.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-08-26",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "biochem_2026-09-30",
+  "group": "biochem",
+  "file": "series/biochem_2026-09-30.pdf",
+  "content_type": "application/pdf",
+  "text": "series/biochem_2026-09-30.txt",
+  "filename": "Биохимия_крови_30.09.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-09-30",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "biochem_2026-10-28",
+  "group": "biochem",
+  "file": "series/biochem_2026-10-28.pdf",
+  "content_type": "application/pdf",
+  "text": "series/biochem_2026-10-28.txt",
+  "filename": "Биохимия_крови_28.10.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-10-28",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-05-13",
+  "group": "cbc",
+  "file": "series/cbc_2026-05-13.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-05-13.txt",
+  "filename": "Общий_анализ_крови_13.05.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-05-13",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-06-10",
+  "group": "cbc",
+  "file": "series/cbc_2026-06-10.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-06-10.txt",
+  "filename": "Общий_анализ_крови_10.06.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-06-10",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-07-08",
+  "group": "cbc",
+  "file": "series/cbc_2026-07-08.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-07-08.txt",
+  "filename": "Общий_анализ_крови_08.07.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-07-08",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-08-05",
+  "group": "cbc",
+  "file": "series/cbc_2026-08-05.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-08-05.txt",
+  "filename": "Общий_анализ_крови_05.08.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-08-05",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-09-02",
+  "group": "cbc",
+  "file": "series/cbc_2026-09-02.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-09-02.txt",
+  "filename": "Общий_анализ_крови_02.09.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-09-02",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "cbc_2026-09-30",
+  "group": "cbc",
+  "file": "series/cbc_2026-09-30.pdf",
+  "content_type": "application/pdf",
+  "text": "series/cbc_2026-09-30.txt",
+  "filename": "Общий_анализ_крови_30.09.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-09-30",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "pelvic_us_2024-09-18",
+  "group": "pelvis",
+  "file": "series/pelvic_us_2024-09-18.pdf",
+  "content_type": "application/pdf",
+  "text": "series/pelvic_us_2024-09-18.txt",
+  "filename": "УЗИ_малого_таза_18.09.2024.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2024-09-18",
+  "synthetic": true,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально",
+   "last_menstruation": "2024-09-12",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Мультифолликулярная структура яичников.",
+   "recommendation": "Наблюдение гинеколога"
+  }
+ },
+ {
+  "key": "pelvic_us_2024-12-11",
+  "group": "pelvis",
+  "file": "series/pelvic_us_2024-12-11.pdf",
+  "content_type": "application/pdf",
+  "text": "series/pelvic_us_2024-12-11.txt",
+  "filename": "УЗИ_малого_таза_11.12.2024.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2024-12-11",
+  "synthetic": true,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально",
+   "last_menstruation": "2024-11-29",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Мультифолликулярная структура яичников.",
+   "recommendation": "Наблюдение гинеколога"
+  }
+ },
+ {
+  "key": "pelvic_us",
+  "group": "pelvis",
+  "file": "pelvic_us_2025-03-25.pdf",
+  "content_type": "application/pdf",
+  "text": "pelvic_us_2025-03-25.txt",
+  "filename": "УЗИ_малого_таза_25.03.2025.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2025-03-25",
+  "synthetic": false,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально (SonoAce R7, 3,5 МГц)",
+   "last_menstruation": "2025-03-19",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Мультифолликулярная структура яичников.",
+   "recommendation": "Консультация гинеколога"
+  }
+ },
+ {
+  "key": "pelvic_us_2025-06-17",
+  "group": "pelvis",
+  "file": "series/pelvic_us_2025-06-17.pdf",
+  "content_type": "application/pdf",
+  "text": "series/pelvic_us_2025-06-17.txt",
+  "filename": "УЗИ_малого_таза_17.06.2025.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2025-06-17",
+  "synthetic": true,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально",
+   "last_menstruation": "2025-06-09",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Мультифолликулярная структура яичников.",
+   "recommendation": "Наблюдение гинеколога"
+  }
+ },
+ {
+  "key": "pelvic_us_2025-10-22",
+  "group": "pelvis",
+  "file": "series/pelvic_us_2025-10-22.pdf",
+  "content_type": "application/pdf",
+  "text": "series/pelvic_us_2025-10-22.txt",
+  "filename": "УЗИ_малого_таза_22.10.2025.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2025-10-22",
+  "synthetic": true,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально",
+   "last_menstruation": "2025-10-13",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Эхографических признаков патологии органов малого таза не выявлено.",
+   "recommendation": "Наблюдение гинеколога"
+  }
+ },
+ {
+  "key": "pelvic_us_2026-02-11",
+  "group": "pelvis",
+  "file": "series/pelvic_us_2026-02-11.pdf",
+  "content_type": "application/pdf",
+  "text": "series/pelvic_us_2026-02-11.txt",
+  "filename": "УЗИ_малого_таза_11.02.2026.pdf",
+  "laboratory": "УЗИ малого таза",
+  "date": "2026-02-11",
+  "synthetic": true,
+  "summary": {
+   "study": "УЗИ органов малого таза, трансабдоминально",
+   "last_menstruation": "2026-02-04",
+   "findings": [
+    "Матка не увеличена, положение anteflexio",
+    "Контуры матки ровные, чёткие; миометрий однородный",
+    "Эндометрий: эхогенность в норме; полость матки сомкнута",
+    "Цервикальный канал не расширен; кист шейки нет",
+    "Яичники расположены обычно",
+    "Маточные трубы не расширены; варикоза параметрия нет",
+    "Лимфоузлы не визуализируются; свободной жидкости в малом тазу нет"
+   ],
+   "conclusion": "Эхографических признаков патологии органов малого таза не выявлено.",
+   "recommendation": "Наблюдение гинеколога"
+  }
+ },
+ {
+  "key": "thyroid_2026-05-20",
+  "group": "thyroid",
+  "file": "series/thyroid_2026-05-20.pdf",
+  "content_type": "application/pdf",
+  "text": "series/thyroid_2026-05-20.txt",
+  "filename": "Гормоны_щитовидной_железы_20.05.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-05-20",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "thyroid_2026-07-15",
+  "group": "thyroid",
+  "file": "series/thyroid_2026-07-15.pdf",
+  "content_type": "application/pdf",
+  "text": "series/thyroid_2026-07-15.txt",
+  "filename": "Гормоны_щитовидной_железы_15.07.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-07-15",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "thyroid_2026-09-23",
+  "group": "thyroid",
+  "file": "series/thyroid_2026-09-23.pdf",
+  "content_type": "application/pdf",
+  "text": "series/thyroid_2026-09-23.txt",
+  "filename": "Гормоны_щитовидной_железы_23.09.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-09-23",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "urine_2026-05-20",
+  "group": "urine",
+  "file": "series/urine_2026-05-20.pdf",
+  "content_type": "application/pdf",
+  "text": "series/urine_2026-05-20.txt",
+  "filename": "Общий_анализ_мочи_20.05.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-05-20",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "urine_2026-07-15",
+  "group": "urine",
+  "file": "series/urine_2026-07-15.pdf",
+  "content_type": "application/pdf",
+  "text": "series/urine_2026-07-15.txt",
+  "filename": "Общий_анализ_мочи_15.07.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-07-15",
+  "synthetic": true,
+  "summary": null
+ },
+ {
+  "key": "urine_2026-09-23",
+  "group": "urine",
+  "file": "series/urine_2026-09-23.pdf",
+  "content_type": "application/pdf",
+  "text": "series/urine_2026-09-23.txt",
+  "filename": "Общий_анализ_мочи_23.09.2026.pdf",
+  "laboratory": "Клинико-диагностическая лаборатория",
+  "date": "2026-09-23",
+  "synthetic": true,
+  "summary": null
+ }
+]

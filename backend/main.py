@@ -7,10 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
 from database import SessionLocal, init_db
-from routers import analytics, auth, computer_vision, integration, intake, maternal, ml_ops, patients, predictions, tasks
+from routers import analytics, auth, computer_vision, family, integration, intake, maternal, maternal_labs, ml_ops, patients, predictions, tasks
 from services.ml_engine import risk_engine
 from services.admission_engine import admission_engine
 from services.regional import BundleUnavailable, load_bundle
+from routers import documents
 
 settings = get_settings()
 
@@ -41,8 +42,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.include_router(documents.router)
 
-for r in (auth.router, patients.router, predictions.router, computer_vision.router, integration.router, analytics.router, maternal.router, tasks.router, ml_ops.router, intake.router):
+for r in (auth.router, patients.router, predictions.router, computer_vision.router, integration.router, analytics.router, maternal.router, family.router, maternal_labs.router, tasks.router, ml_ops.router, intake.router):
     app.include_router(r)
 
 

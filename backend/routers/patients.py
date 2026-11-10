@@ -19,6 +19,15 @@ async def latest_vitals(db: AsyncSession, patient_id: str) -> VitalSign | None:
     return (await db.execute(select(VitalSign).where(VitalSign.patient_id == patient_id).order_by(VitalSign.time.desc()).limit(1))).scalar_one_or_none()
 
 
+async def vitals_since(db: AsyncSession, patient_id: str, hours: int) -> list[VitalSign]:
+    """The `hours` before the newest sample, so a stay can still be replayed after monitoring stops."""
+    last = await latest_vitals(db, patient_id)
+    if not last:
+        return []
+    since = last.time - timedelta(hours=hours)
+    return (await db.execute(select(VitalSign).where(VitalSign.patient_id == patient_id, VitalSign.time >= since).order_by(VitalSign.time))).scalars().all()
+
+
 def _out(p: Patient, v: VitalSign | None) -> PatientOut:
     out = PatientOut.model_validate(p)
     if v:
@@ -68,9 +77,7 @@ async def create_patient(body: PatientCreate, request: Request, db: AsyncSession
 @router.get("/{patient_id}/vitals", response_model=list[VitalsOut])
 async def vitals_history(patient_id: str, hours: int = 24, db: AsyncSession = Depends(get_db), user: User = Depends(require_roles(*CLINICAL))):
     await get_accessible_patient(db, user, patient_id)
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
-    rows = (await db.execute(select(VitalSign).where(VitalSign.patient_id == patient_id, VitalSign.time >= since).order_by(VitalSign.time))).scalars().all()
-    return rows
+    return await vitals_since(db, patient_id, hours)
 
 
 @router.post("/{patient_id}/vitals", response_model=VitalsOut, status_code=status.HTTP_201_CREATED)
